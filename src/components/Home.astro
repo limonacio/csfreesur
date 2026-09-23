@@ -1,0 +1,39 @@
+---
+/**
+ * La página completa, armada con bloques (componentes).
+ * Las 3 páginas (/, /en/, /pt/) usan este mismo archivo: solo cambia `lang`.
+ * Así no duplicamos HTML por idioma.
+ */
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import TrustStrip from './TrustStrip.astro';
+import Destinos from './Destinos.astro';
+import Vehiculo from './Vehiculo.astro';
+import Pasos from './Pasos.astro';
+import FAQ from './FAQ.astro';
+import CtaFinal from './CtaFinal.astro';
+import Footer from './Footer.astro';
+import WhatsAppFlotante from './WhatsAppFlotante.astro';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+---
+
+<Base lang={lang}>
+  <Header lang={lang} />
+  <main>
+    <Hero lang={lang} />
+    <TrustStrip lang={lang} />
+    <Destinos lang={lang} />
+    <Vehiculo lang={lang} />
+    <Pasos lang={lang} />
+    <FAQ lang={lang} />
+    <CtaFinal lang={lang} />
+  </main>
+  <Footer lang={lang} />
+  <WhatsAppFlotante lang={lang} />
+</Base>

@@ -1,0 +1,90 @@
+---
+import { t, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
+import Ilustracion from './Ilustracion.astro';
+
+interface Props {
+  lang: Lang;
+}
+const d = t(Astro.props.lang);
+---
+
+<section id="vehiculo" class="section container">
+  <div class="box">
+    <div class="media">
+      <Ilustracion tipo="van" alt={d.vehiculo.photoAlt} />
+    </div>
+    <div class="copy">
+      <span class="eyebrow">{d.vehiculo.eyebrow}</span>
+      <h2>{d.vehiculo.title}</h2>
+      <ul>
+        {d.vehiculo.features(SITE.vehicle.passengers).map((f) => <li>{f}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .box {
+    padding: clamp(24px, 4.5vw, 64px);
+    background: var(--deep);
+    color: var(--on-deep);
+    border-radius: var(--radius-lg);
+    display: grid;
+    grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+    gap: clamp(32px, 4.5vw, 64px);
+    align-items: center;
+  }
+  .media {
+    aspect-ratio: 7 / 5;
+    border-radius: var(--radius);
+    background: var(--deep-2);
+    display: grid;
+    place-items: center;
+    padding: 40px;
+  }
+  .copy {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .eyebrow {
+    color: var(--on-deep-accent);
+  }
+  h2 {
+    font-size: clamp(30px, 3.6vw, 48px);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 32px;
+    color: var(--on-deep-muted);
+  }
+  li {
+    padding-left: 22px;
+    position: relative;
+  }
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--on-deep-accent);
+  }
+  @media (max-width: 960px) {
+    .box {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    ul {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

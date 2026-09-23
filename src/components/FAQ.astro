@@ -1,0 +1,88 @@
+---
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const d = t(Astro.props.lang);
+
+// FAQ en schema.org: Google puede mostrar estas preguntas directo en los resultados.
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: d.faq.items.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<section id="faq" class="section container faq">
+  <h2 class="h2">{d.faq.title}</h2>
+  <div class="items">
+    {
+      /* <details>/<summary> es un acordeón nativo de HTML: cero JavaScript */
+      d.faq.items.map((f, i) => (
+        <details open={i === 0}>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))
+    }
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</section>
+
+<style>
+  .faq {
+    display: grid;
+    grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+    gap: 64px;
+  }
+  details {
+    border-top: 1px solid var(--line-strong);
+  }
+  details:last-child {
+    border-bottom: 1px solid var(--line-strong);
+  }
+  summary {
+    padding: 22px 40px 22px 0;
+    font-size: 19px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  /* Signo + / – dibujado con CSS */
+  summary::after {
+    content: '+';
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  details[open] summary::after {
+    content: '–';
+  }
+  details p {
+    padding-bottom: 24px;
+    color: var(--muted);
+    max-width: 680px;
+  }
+  @media (max-width: 960px) {
+    .faq {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    summary {
+      font-size: 17px;
+    }
+  }
+</style>

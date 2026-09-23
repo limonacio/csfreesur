@@ -1,0 +1,87 @@
+---
+/**
+ * Ilustraciones SVG que ocupan el lugar de las fotos hasta tener fotos reales.
+ *
+ * TODO fotos: cuando tengas las fotos, guardalas en src/assets/ y reemplazá
+ * <Ilustracion .../> por el componente <Image> de Astro (astro:assets), que
+ * las optimiza solo (webp/avif, tamaños responsive, lazy loading).
+ */
+interface Props {
+  tipo: 'hero' | 'glaciar' | 'chalten' | 'aeropuerto' | 'van';
+  alt: string;
+}
+const { tipo, alt } = Astro.props;
+---
+
+{
+  tipo === 'hero' && (
+    <svg viewBox="0 0 640 620" preserveAspectRatio="xMidYMid slice" role="img" aria-label={alt}>
+      <rect width="640" height="620" fill="#D8EBF1" />
+      <polygon points="0,300 90,170 160,240 250,110 330,220 420,130 520,230 640,150 640,380 0,380" fill="#8FB3C2" />
+      <polygon points="250,110 225,150 262,142 280,160 300,175 330,220" fill="#FFFFFF" />
+      <polygon points="420,130 400,165 430,158 455,170 470,180" fill="#FFFFFF" />
+      <polygon points="0,360 120,300 260,330 380,290 520,320 640,295 640,420 0,420" fill="#EAF5F8" />
+      <path
+        d="M60 350 L70 410 M140 330 L150 410 M230 340 L236 410 M320 320 L330 410 M410 310 L416 410 M500 322 L508 410 M580 310 L586 410"
+        stroke="#A9CFDC"
+        stroke-width="3"
+      />
+      <rect y="410" width="640" height="210" fill="#3E7F99" />
+      <path d="M0 470 H640 M40 520 H300 M360 540 H600" stroke="#6FA6BB" stroke-width="2" />
+      <polygon points="0,560 140,520 300,560 460,530 640,570 640,620 0,620" fill="#1F4E5F" />
+    </svg>
+  )
+}
+{
+  tipo === 'glaciar' && (
+    <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label={alt}>
+      <rect width="400" height="240" fill="#D8EBF1" />
+      <polygon points="0,140 80,70 150,120 240,50 320,110 400,80 400,170 0,170" fill="#8FB3C2" />
+      <polygon points="0,160 400,150 400,200 0,200" fill="#EAF5F8" />
+      <rect y="190" width="400" height="50" fill="#3E7F99" />
+    </svg>
+  )
+}
+{
+  tipo === 'chalten' && (
+    <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label={alt}>
+      <rect width="400" height="240" fill="#E3ECEF" />
+      <polygon points="150,190 200,30 215,70 230,40 280,190" fill="#5E7F8C" />
+      <polygon points="200,30 190,65 205,58 215,70" fill="#FFFFFF" />
+      <polygon points="0,190 90,120 150,190" fill="#8FB3C2" />
+      <polygon points="260,190 340,110 400,160 400,190" fill="#8FB3C2" />
+      <rect y="190" width="400" height="50" fill="#9C8B63" />
+    </svg>
+  )
+}
+{
+  tipo === 'aeropuerto' && (
+    <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label={alt}>
+      <rect width="400" height="240" fill="#E8EEF0" />
+      <polygon points="0,150 400,130 400,240 0,240" fill="#B9A77F" />
+      <path d="M60 110 L150 95 L240 100" stroke="#0E2233" stroke-width="6" stroke-linecap="round" fill="none" />
+      <path d="M150 95 L130 110 M150 95 L165 108" stroke="#0E2233" stroke-width="4" stroke-linecap="round" />
+      <rect x="40" y="170" width="320" height="16" rx="8" fill="#5E6B70" />
+    </svg>
+  )
+}
+{
+  tipo === 'van' && (
+    <svg
+      viewBox="0 0 360 170"
+      fill="none"
+      stroke="#CFE6EE"
+      stroke-width="3"
+      stroke-linejoin="round"
+      stroke-linecap="round"
+      role="img"
+      aria-label={alt}
+    >
+      <path d="M20 120 V95 L50 90 L95 45 H250 L300 88 L338 96 V120 H20 Z" />
+      <path d="M105 55 H170 V88 H70 Z" />
+      <path d="M180 55 H245 L285 88 H180 Z" />
+      <circle cx="85" cy="122" r="22" fill="#1C3A4E" />
+      <circle cx="275" cy="122" r="22" fill="#1C3A4E" />
+    </svg>
+  )
+}

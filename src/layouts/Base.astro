@@ -1,0 +1,73 @@
+---
+/**
+ * Layout base: el "esqueleto" HTML que comparten todas las páginas.
+ * Acá va todo lo del <head>: SEO, idioma, fuentes, favicon.
+ */
+import '@fontsource-variable/fraunces';
+import '@fontsource/instrument-sans/400.css';
+import '@fontsource/instrument-sans/500.css';
+import '@fontsource/instrument-sans/600.css';
+import '../styles/global.css';
+
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import { LANGS, LANG_LOCALE, t, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const dict = t(lang);
+const canonical = getAbsoluteLocaleUrl(lang, '');
+
+// Datos estructurados (schema.org): ayudan a Google a entender que es un
+// negocio local de transporte en El Calafate.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TaxiService',
+  name: SITE.fullName,
+  areaServed: ['El Calafate', 'El Chaltén', 'Río Gallegos', 'Puerto Natales', 'Punta Arenas'],
+  telephone: `+${SITE.whatsapp}`,
+  email: SITE.email,
+  url: canonical,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'El Calafate',
+    addressRegion: 'Santa Cruz',
+    addressCountry: 'AR',
+  },
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{dict.meta.title}</title>
+    <meta name="description" content={dict.meta.description} />
+    <link rel="canonical" href={canonical} />
+    {!SITE.indexable && <meta name="robots" content="noindex, nofollow" />}
+
+    {/* hreflang: le dice a Google qué versión mostrar según el idioma del usuario */}
+    {LANGS.map((l) => <link rel="alternate" hreflang={l} href={getAbsoluteLocaleUrl(l, '')} />)}
+    <link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl('es', '')} />
+
+    {/* Open Graph: cómo se ve el link al compartirlo por WhatsApp / redes */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={dict.meta.title} />
+    <meta property="og:description" content={dict.meta.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={LANG_LOCALE[lang]} />
+    <meta property="og:site_name" content={SITE.fullName} />
+
+    <meta name="theme-color" content="#0e2233" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

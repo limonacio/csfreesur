@@ -1,0 +1,189 @@
+/*
+ * Estilos globales + "design tokens".
+ *
+ * Los tokens son variables CSS con los colores, tipografías y medidas del
+ * diseño. Los componentes NUNCA escriben un color a mano (#0F5B73): usan
+ * var(--accent). Así, cambiar la marca es cambiar este archivo.
+ */
+
+:root {
+  /* Colores */
+  --bg: #f5f7f7;
+  --surface: #ffffff;
+  --ink: #0e2233;
+  --muted: #4a5c68;
+  --line: #d9e2e6;
+  --line-strong: #c9d6db;
+  --accent: #0f5b73;
+  --accent-hover: #0a4254;
+  --accent-soft: #e4eef1;
+  --ice: #cfe6ee;
+  --ice-ink: #28404f;
+  --deep: #0e2233;
+  --deep-2: #1c3a4e;
+  --on-deep: #f5f7f7;
+  --on-deep-muted: #d5e3e8;
+  --on-deep-accent: #9ccbdc;
+  --wa: #1b7f4b;
+  --wa-hover: #146239;
+
+  /* Tipografía */
+  --font-display: 'Fraunces Variable', Georgia, serif;
+  --font-body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Medidas */
+  --container: 1280px;
+  --gutter: clamp(16px, 5vw, 80px);
+  --radius-sm: 10px;
+  --radius: 20px;
+  --radius-lg: 28px;
+  --section-gap: clamp(72px, 10vw, 120px);
+  --header-h: 80px;
+
+  --shadow: 0 12px 32px -18px rgba(14, 34, 51, 0.35);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Que los anchors (#destinos) no queden tapados por el header fijo */
+  scroll-padding-top: calc(var(--header-h) + 16px);
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--accent);
+}
+a:hover {
+  color: var(--accent-hover);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Foco visible para quien navega con teclado (accesibilidad) */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ——— Utilidades reutilizables ——— */
+
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-top: var(--section-gap);
+}
+
+.eyebrow {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.h2 {
+  font-size: clamp(34px, 4.4vw, 52px);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.btn svg {
+  flex: none; /* que el ícono no se achique cuando falta espacio */
+}
+.btn-wa {
+  background: var(--wa);
+  color: #fff;
+}
+.btn-wa:hover {
+  background: var(--wa-hover);
+  color: #fff;
+}
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+}
+.btn-accent:hover {
+  background: var(--accent-hover);
+  color: #fff;
+}
+
+/* Texto solo para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

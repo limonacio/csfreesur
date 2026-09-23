@@ -1,0 +1,68 @@
+---
+import { t, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
+import { waLink } from '../lib/whatsapp';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+const d = t(Astro.props.lang);
+---
+
+<section class="section container">
+  <div class="cta">
+    <div>
+      <h2>{d.cta.title}</h2>
+      <p>{d.cta.text}</p>
+    </div>
+    <a href={waLink(d.cta.mensaje)} class="btn btn-wa big" target="_blank" rel="noopener">
+      <Icon name="chat" size={22} />
+      WhatsApp {SITE.whatsappDisplay}
+    </a>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding: clamp(32px, 5vw, 72px);
+    background: var(--ice);
+    border-radius: var(--radius-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+  }
+  .cta > div {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  h2 {
+    font-size: clamp(32px, 3.6vw, 48px);
+  }
+  p {
+    font-size: 18px;
+    color: var(--ice-ink);
+  }
+  .big {
+    min-height: 60px;
+    padding: 0 32px;
+    font-size: 18px;
+    flex: none;
+    white-space: nowrap;
+  }
+  @media (max-width: 960px) {
+    .cta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  @media (max-width: 560px) {
+    .big {
+      width: 100%;
+      font-size: 15px;
+      padding: 0 16px;
+    }
+  }
+</style>

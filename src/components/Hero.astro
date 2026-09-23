@@ -1,0 +1,246 @@
+---
+import { t, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
+import { DESTINOS } from '../data/destinos';
+import Icon from './Icon.astro';
+import Ilustracion from './Ilustracion.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const d = t(lang);
+
+const opciones = DESTINOS.map((x) => x.nombre[lang]);
+const pasajeros = Array.from({ length: SITE.vehicle.passengers }, (_, i) => i + 1);
+
+/*
+ * Truco de senior: las funciones del diccionario (d.quote.mensaje) viven en el
+ * SERVIDOR. El navegador no las tiene. Entonces generamos acá una "plantilla"
+ * con marcadores {d} {f} {p} y se la pasamos al script del cliente por
+ * atributos data-*. El script solo reemplaza los marcadores.
+ */
+const tplConFecha = d.quote.mensaje('{d}', '{f}', '{p}');
+const tplSinFecha = d.quote.mensaje('{d}', '', '{p}');
+---
+
+<section class="hero container">
+  <div class="hero-copy">
+    <span class="badge">{d.hero.badge}</span>
+    <h1>{d.hero.title}</h1>
+    <p class="lead">{d.hero.subtitle}</p>
+
+    <form
+      class="quote"
+      id="quote-form"
+      data-wa={SITE.whatsapp}
+      data-tpl-fecha={tplConFecha}
+      data-tpl-sin-fecha={tplSinFecha}
+    >
+      <label>
+        {d.quote.destino}
+        <select name="destino">
+          {opciones.map((o) => <option>{o}</option>)}
+          <option>{d.quote.otro}</option>
+        </select>
+      </label>
+      <label>
+        {d.quote.fecha}
+        <input type="date" name="fecha" />
+      </label>
+      <label>
+        {d.quote.pasajeros}
+        <select name="pasajeros">
+          {pasajeros.map((n) => <option selected={n === 2}>{n}</option>)}
+        </select>
+      </label>
+      <button type="submit" class="btn btn-accent">{d.quote.boton}</button>
+    </form>
+    <p class="note">{d.quote.nota}</p>
+  </div>
+
+  <div class="hero-media">
+    <Ilustracion tipo="hero" alt={d.hero.photoAlt} />
+    <div class="vehicle-card">
+      <span class="vehicle-icon"><Icon name="van" size={26} /></span>
+      <span>
+        <strong>{d.hero.vehicleTitle}</strong>
+        <span>{d.hero.vehicleText(SITE.vehicle.passengers)}</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+    gap: 64px;
+    align-items: center;
+    padding-top: 72px;
+    padding-bottom: 80px;
+  }
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .badge {
+    align-self: flex-start;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  h1 {
+    font-size: clamp(40px, 5.6vw, 76px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+  .lead {
+    font-size: clamp(17px, 1.5vw, 20px);
+    color: var(--muted);
+    max-width: 560px;
+  }
+
+  .quote {
+    margin-top: 8px;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 0.8fr auto;
+    gap: 12px;
+    align-items: end;
+  }
+  .quote label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    min-width: 0;
+  }
+  .quote select,
+  .quote input {
+    height: 48px;
+    width: 100%;
+    padding: 0 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 16px; /* 16px evita que iPhone haga zoom al tocar el campo */
+    font-weight: 500;
+  }
+  .note {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .hero-media {
+    position: relative;
+    aspect-ratio: 640 / 620;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--ice);
+  }
+  .hero-media :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+  .vehicle-card {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .vehicle-card > span:last-child {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .vehicle-card strong {
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .vehicle-icon {
+    width: 48px;
+    height: 48px;
+    flex: none;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+  }
+
+  @media (max-width: 1100px) {
+    .quote {
+      grid-template-columns: 1fr 1fr;
+    }
+    .quote label:first-child,
+    .quote button {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 960px) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding-top: 24px;
+      padding-bottom: 56px;
+    }
+    /* En mobile la imagen va arriba del texto */
+    .hero-media {
+      order: -1;
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius);
+    }
+    .vehicle-card {
+      left: 12px;
+      right: auto;
+      bottom: 12px;
+      padding: 10px 14px 10px 10px;
+      gap: 10px;
+    }
+    .vehicle-icon {
+      width: 40px;
+      height: 40px;
+    }
+  }
+</style>
+
+<script>
+  // Cotizador: arma el mensaje con lo que eligió el usuario y abre WhatsApp.
+  const form = document.querySelector<HTMLFormElement>('#quote-form');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault(); // evita que el form recargue la página
+    const data = new FormData(form);
+    const destino = String(data.get('destino') ?? '');
+    const pax = String(data.get('pasajeros') ?? '');
+    const fechaISO = String(data.get('fecha') ?? ''); // "2026-11-12"
+
+    // Pasamos la fecha a formato local: 12/11/2026
+    const fecha = fechaISO ? fechaISO.split('-').reverse().join('/') : '';
+
+    const tpl = fecha ? form.dataset.tplFecha : form.dataset.tplSinFecha;
+    const mensaje = (tpl ?? '').replace('{d}', destino).replace('{f}', fecha).replace('{p}', pax);
+
+    const url = `https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, '_blank', 'noopener');
+  });
+</script>

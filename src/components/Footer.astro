@@ -1,0 +1,49 @@
+---
+import { t, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const d = t(Astro.props.lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container inner">
+    <span>© {year} {SITE.fullName} · {SITE.city}, {SITE.region}. {d.footer.rights}</span>
+    <span class="links">
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      <a href={SITE.instagram} target="_blank" rel="noopener">{SITE.instagramHandle}</a>
+    </span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: var(--section-gap);
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .inner {
+    padding-top: 40px;
+    /* espacio extra abajo para que el botón flotante no tape el texto */
+    padding-bottom: 96px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px 32px;
+    flex-wrap: wrap;
+    font-size: 15px;
+    color: var(--muted);
+  }
+  .links {
+    display: flex;
+    gap: 24px;
+  }
+  a {
+    color: var(--muted);
+  }
+  a:hover {
+    color: var(--accent);
+  }
+</style>
