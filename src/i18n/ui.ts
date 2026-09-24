@@ -29,6 +29,8 @@ const es = {
     menu: 'Abrir menú',
     cerrar: 'Cerrar menú',
     idioma: 'Idioma',
+    temaOscuro: 'Activar tema oscuro',
+    temaClaro: 'Activar tema claro',
   },
   hero: {
     badge: 'Remis privado desde El Calafate',
@@ -147,6 +149,8 @@ const en: Dict = {
     menu: 'Open menu',
     cerrar: 'Close menu',
     idioma: 'Language',
+    temaOscuro: 'Switch to dark theme',
+    temaClaro: 'Switch to light theme',
   },
   hero: {
     badge: 'Private driver from El Calafate',
@@ -263,6 +267,8 @@ const pt: Dict = {
     menu: 'Abrir menu',
     cerrar: 'Fechar menu',
     idioma: 'Idioma',
+    temaOscuro: 'Ativar tema escuro',
+    temaClaro: 'Ativar tema claro',
   },
   hero: {
     badge: 'Transfer privado desde El Calafate',

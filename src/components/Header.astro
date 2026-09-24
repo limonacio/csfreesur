@@ -4,6 +4,7 @@ import { LANGS, LANG_LABEL, LANG_NAME, t, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 import { waLink } from '../lib/whatsapp';
 import Icon from './Icon.astro';
+import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
   lang: Lang;
@@ -61,10 +62,13 @@ const links = [
       </a>
     </nav>
 
-    <button class="menu-toggle" type="button" aria-controls="menu" aria-expanded="false" aria-label={d.nav.menu} data-open-label={d.nav.menu} data-close-label={d.nav.cerrar}>
+    <div class="header-actions">
+      <ThemeToggle lang={lang} />
+      <button class="menu-toggle" type="button" aria-controls="menu" aria-expanded="false" aria-label={d.nav.menu} data-open-label={d.nav.menu} data-close-label={d.nav.cerrar}>
       <span class="icon-open"><Icon name="menu" size={24} /></span>
       <span class="icon-close"><Icon name="close" size={24} /></span>
-    </button>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -112,6 +116,12 @@ const links = [
     display: flex;
     align-items: center;
     gap: 32px;
+    margin-left: auto;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
   .nav ul {
     list-style: none;

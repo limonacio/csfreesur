@@ -1,0 +1,96 @@
+---
+/**
+ * Botón para cambiar entre tema claro y oscuro.
+ * El tema inicial ya lo puso el script del <head> (Base.astro); este
+ * componente solo lo cambia y guarda la elección en localStorage.
+ */
+import { t, type Lang } from '../i18n/ui';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+const d = t(Astro.props.lang);
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  aria-label={d.nav.temaOscuro}
+  title={d.nav.temaOscuro}
+  data-label-dark={d.nav.temaOscuro}
+  data-label-light={d.nav.temaClaro}
+>
+  {/* En tema claro mostramos la luna (= "pasar a oscuro") y viceversa */}
+  <span class="icon-moon"><Icon name="moon" size={22} /></span>
+  <span class="icon-sun"><Icon name="sun" size={22} /></span>
+</button>
+
+<style>
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  .theme-toggle:hover {
+    background: var(--accent-soft);
+  }
+  .icon-sun {
+    display: none;
+  }
+  /* :global porque data-theme está en <html>, fuera de este componente */
+  :global([data-theme='dark']) .icon-sun {
+    display: block;
+  }
+  :global([data-theme='dark']) .icon-moon {
+    display: none;
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const btn = document.querySelector<HTMLButtonElement>('.theme-toggle');
+
+  // Actualiza el texto accesible según el tema actual
+  function syncLabel() {
+    if (!btn) return;
+    const isDark = root.dataset.theme === 'dark';
+    const label = (isDark ? btn.dataset.labelLight : btn.dataset.labelDark) ?? '';
+    btn.setAttribute('aria-label', label);
+    btn.title = label;
+  }
+
+  function apply(theme: 'light' | 'dark', save: boolean) {
+    root.dataset.theme = theme;
+    if (save) {
+      try {
+        localStorage.setItem('theme', theme);
+      } catch {
+        // modo incógnito o storage bloqueado: el tema funciona igual, solo no se recuerda
+      }
+    }
+    syncLabel();
+  }
+
+  btn?.addEventListener('click', () => {
+    apply(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
+  });
+
+  // Si el usuario nunca eligió, seguimos al sistema en vivo (ej: el celu pasa a modo noche)
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem('theme');
+    } catch {}
+    if (!saved) apply(e.matches ? 'dark' : 'light', false);
+  });
+
+  syncLabel();
+</script>
