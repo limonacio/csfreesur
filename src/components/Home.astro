@@ -15,6 +15,7 @@ import FAQ from './FAQ.astro';
 import CtaFinal from './CtaFinal.astro';
 import Footer from './Footer.astro';
 import WhatsAppFlotante from './WhatsAppFlotante.astro';
+import VolverArriba from './VolverArriba.astro';
 import type { Lang } from '../i18n/ui';
 
 interface Props {
@@ -35,5 +36,6 @@ const { lang } = Astro.props;
     <CtaFinal lang={lang} />
   </main>
   <Footer lang={lang} />
+  <VolverArriba lang={lang} />
   <WhatsAppFlotante lang={lang} />
 </Base>

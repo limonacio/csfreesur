@@ -126,6 +126,7 @@ const es = {
     rights: 'Todos los derechos reservados.',
   },
   float: 'Escribir por WhatsApp',
+  arriba: 'Volver arriba',
   approx: '≈',
 };
 
@@ -243,6 +244,7 @@ const en: Dict = {
     rights: 'All rights reserved.',
   },
   float: 'Message us on WhatsApp',
+  arriba: 'Back to top',
   approx: '≈',
 };
 
@@ -358,6 +360,7 @@ const pt: Dict = {
     rights: 'Todos os direitos reservados.',
   },
   float: 'Escrever no WhatsApp',
+  arriba: 'Voltar ao topo',
   approx: '≈',
 };
 

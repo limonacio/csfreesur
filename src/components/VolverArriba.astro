@@ -1,0 +1,90 @@
+---
+/**
+ * Botón "volver arriba".
+ * - Aparece recién cuando bajaste un poco (no tiene sentido arriba de todo).
+ * - Desktop: va encima del botón redondo de WhatsApp.
+ * - Mobile: va encima de la barra verde de WhatsApp.
+ */
+import { t, type Lang } from '../i18n/ui';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+const d = t(Astro.props.lang);
+---
+
+<button type="button" class="to-top" aria-label={d.arriba} title={d.arriba}>
+  <Icon name="arrowUp" size={22} />
+</button>
+
+<style>
+  .to-top {
+    position: fixed;
+    z-index: 40;
+    /* centrado sobre el botón de WhatsApp (64px) → 28 + (64 - 48) / 2 = 36 */
+    right: 36px;
+    bottom: 108px;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--deep);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 10px 24px -8px rgba(14, 34, 51, 0.5);
+
+    /* Oculto por defecto: invisible y un poco más abajo */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0.2s,
+      background-color 0.15s ease;
+  }
+  /* Visible: la clase la pone el script cuando el usuario scrollea */
+  .to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .to-top:hover {
+    background: var(--accent);
+  }
+
+  @media (max-width: 560px) {
+    .to-top {
+      /* barra de WhatsApp: bottom 16 + alto 54 + 12 de aire = 82 */
+      right: 16px;
+      bottom: 82px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .to-top {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.to-top');
+
+  // Mostrar el botón después de bajar ~1 pantalla
+  function actualizar() {
+    btn?.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.8);
+  }
+  // { passive: true } le avisa al navegador que no vamos a bloquear el scroll → más fluido
+  window.addEventListener('scroll', actualizar, { passive: true });
+  actualizar();
+
+  btn?.addEventListener('click', () => {
+    // Respetamos a quien pidió "menos animaciones" en su sistema operativo
+    const sinAnimacion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: sinAnimacion ? 'auto' : 'smooth' });
+  });
+</script>
