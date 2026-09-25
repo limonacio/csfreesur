@@ -1,6 +1,11 @@
 ---
 /**
- * Botón para cambiar entre tema claro y oscuro.
+ * Interruptor "Modo oscuro" (vive dentro de MenuPreferencias).
+ *
+ * Usamos role="switch" + aria-checked: los lectores de pantalla lo anuncian
+ * como "Modo oscuro, interruptor, activado/desactivado". La etiqueta NO cambia,
+ * cambia el estado; es más claro que un botón cuyo texto va cambiando.
+ *
  * El tema inicial ya lo puso el script del <head> (Base.astro); este
  * componente solo lo cambia y guarda la elección en localStorage.
  */
@@ -13,58 +18,82 @@ interface Props {
 const d = t(Astro.props.lang);
 ---
 
-<button
-  type="button"
-  class="theme-toggle"
-  aria-label={d.nav.temaOscuro}
-  title={d.nav.temaOscuro}
-  data-label-dark={d.nav.temaOscuro}
-  data-label-light={d.nav.temaClaro}
->
-  {/* En tema claro mostramos la luna (= "pasar a oscuro") y viceversa */}
-  <span class="icon-moon"><Icon name="moon" size={22} /></span>
-  <span class="icon-sun"><Icon name="sun" size={22} /></span>
+<button type="button" role="switch" aria-checked="false" class="theme-switch">
+  <span class="theme-icon"><Icon name="moon" size={20} /></span>
+  <span class="theme-label">{d.nav.modoOscuro}</span>
+  <span class="track" aria-hidden="true"><span class="thumb"></span></span>
 </button>
 
 <style>
-  .theme-toggle {
-    width: 44px;
-    height: 44px;
+  .theme-switch {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 12px;
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-sm);
     background: transparent;
     color: var(--ink);
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: left;
     cursor: pointer;
-    transition: background-color 0.15s ease;
   }
-  .theme-toggle:hover {
+  .theme-switch:hover {
     background: var(--accent-soft);
   }
-  .icon-sun {
-    display: none;
+  .theme-icon {
+    display: grid;
+    color: var(--muted);
   }
-  /* :global porque data-theme está en <html>, fuera de este componente */
-  :global([data-theme='dark']) .icon-sun {
-    display: block;
+  .theme-label {
+    flex: 1;
   }
-  :global([data-theme='dark']) .icon-moon {
-    display: none;
+
+  /* El "pill" del interruptor, dibujado con CSS */
+  .track {
+    position: relative;
+    width: 40px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--line-strong);
+    transition: background-color 0.2s ease;
+    flex: none;
+  }
+  .thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+  }
+  .theme-switch[aria-checked='true'] .track {
+    background: var(--accent);
+  }
+  .theme-switch[aria-checked='true'] .thumb {
+    transform: translateX(16px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .track,
+    .thumb {
+      transition: none;
+    }
   }
 </style>
 
 <script>
   const root = document.documentElement;
-  const btn = document.querySelector<HTMLButtonElement>('.theme-toggle');
+  const sw = document.querySelector<HTMLButtonElement>('.theme-switch');
 
-  // Actualiza el texto accesible según el tema actual
-  function syncLabel() {
-    if (!btn) return;
-    const isDark = root.dataset.theme === 'dark';
-    const label = (isDark ? btn.dataset.labelLight : btn.dataset.labelDark) ?? '';
-    btn.setAttribute('aria-label', label);
-    btn.title = label;
+  // Refleja el tema actual en el interruptor
+  function sync() {
+    sw?.setAttribute('aria-checked', String(root.dataset.theme === 'dark'));
   }
 
   function apply(theme: 'light' | 'dark', save: boolean) {
@@ -76,10 +105,10 @@ const d = t(Astro.props.lang);
         // modo incógnito o storage bloqueado: el tema funciona igual, solo no se recuerda
       }
     }
-    syncLabel();
+    sync();
   }
 
-  btn?.addEventListener('click', () => {
+  sw?.addEventListener('click', () => {
     apply(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
   });
 
@@ -92,5 +121,5 @@ const d = t(Astro.props.lang);
     if (!saved) apply(e.matches ? 'dark' : 'light', false);
   });
 
-  syncLabel();
+  sync();
 </script>

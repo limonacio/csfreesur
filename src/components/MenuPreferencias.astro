@@ -1,0 +1,234 @@
+---
+/**
+ * Menú desplegable de preferencias: idioma + tema.
+ *
+ * Patrón "disclosure": un <button> con aria-expanded que muestra/oculta un
+ * panel. Es el patrón accesible más simple para un menú de este tipo.
+ */
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { LANGS, LANG_LABEL, LANG_NAME, t, type Lang } from '../i18n/ui';
+import Icon from './Icon.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const d = t(lang);
+---
+
+<div class="prefs">
+  <button
+    type="button"
+    class="prefs-btn"
+    aria-expanded="false"
+    aria-controls="prefs-panel"
+    aria-label={`${d.nav.preferencias}: ${LANG_NAME[lang]}`}
+  >
+    <Icon name="globe" size={20} />
+    <span class="code">{LANG_LABEL[lang]}</span>
+    <span class="chevron"><Icon name="chevronDown" size={16} /></span>
+  </button>
+
+  <div class="panel" id="prefs-panel">
+    <p class="title">{d.nav.idioma}</p>
+    <ul>
+      {
+        LANGS.map((l) => (
+          <li>
+            <a
+              href={getRelativeLocaleUrl(l, '')}
+              hreflang={l}
+              lang={l}
+              aria-current={l === lang ? 'true' : undefined}
+            >
+              <span class="name">{LANG_NAME[l]}</span>
+              <span class="short">{LANG_LABEL[l]}</span>
+              <span class="check">{l === lang && <Icon name="check" size={18} />}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <hr />
+
+    <p class="title">{d.nav.tema}</p>
+    <ThemeToggle lang={lang} />
+  </div>
+</div>
+
+<style>
+  .prefs {
+    position: relative;
+  }
+
+  .prefs-btn {
+    height: 44px;
+    padding: 0 10px 0 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .prefs-btn:hover,
+  .prefs-btn[aria-expanded='true'] {
+    background: var(--accent-soft);
+    border-color: var(--accent-soft);
+  }
+  .chevron {
+    display: grid;
+    color: var(--muted);
+    transition: transform 0.2s ease;
+  }
+  .prefs-btn[aria-expanded='true'] .chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Panel: oculto por defecto, aparece deslizándose hacia abajo */
+  .panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 60;
+    width: 260px;
+    padding: 8px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease,
+      visibility 0.18s;
+  }
+  .prefs.is-open .panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    /* Al ABRIR, visibility cambia al instante (0s): si no, el panel sigue
+       "oculto" unos milisegundos y no se le puede pasar el foco con teclado.
+       Al CERRAR se usa la transición de arriba, así se ve el fade-out. */
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease,
+      visibility 0s;
+  }
+
+  .title {
+    margin: 8px 12px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li a {
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  li a:hover {
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
+  li a[aria-current='true'] {
+    font-weight: 600;
+  }
+  .name {
+    flex: 1;
+  }
+  .short {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .check {
+    width: 18px;
+    display: grid;
+    color: var(--accent);
+  }
+  hr {
+    margin: 8px 4px;
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  /* En mobile, el panel se alinea con el borde derecho de la pantalla
+     (el botón hamburguesa ocupa 44px + 4px de separación a su derecha) */
+  @media (max-width: 960px) {
+    .panel {
+      right: -48px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .panel,
+    .chevron {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>('.prefs');
+  const btn = wrap?.querySelector<HTMLButtonElement>('.prefs-btn');
+
+  function setOpen(open: boolean) {
+    if (!wrap || !btn) return;
+    wrap.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    // Avisamos para que el menú hamburguesa se cierre (ver Header.astro)
+    if (open) document.dispatchEvent(new CustomEvent('menu:open', { detail: 'prefs' }));
+  }
+
+  btn?.addEventListener('click', (e) => {
+    const open = !wrap?.classList.contains('is-open');
+    setOpen(open);
+    // e.detail === 0 → se activó con teclado (Enter/Espacio): llevamos el foco
+    // al primer idioma para poder seguir navegando con Tab/flechas
+    if (open && e.detail === 0) wrap?.querySelector<HTMLElement>('.panel a')?.focus();
+  });
+
+  // Click afuera → cerrar
+  document.addEventListener('click', (e) => {
+    if (wrap && !wrap.contains(e.target as Node)) setOpen(false);
+  });
+
+  // Escape → cerrar y devolver el foco al botón
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && wrap?.classList.contains('is-open')) {
+      setOpen(false);
+      btn?.focus();
+    }
+  });
+
+  // Si se abre el menú hamburguesa, cerramos este
+  document.addEventListener('menu:open', (e) => {
+    if ((e as CustomEvent).detail !== 'prefs') setOpen(false);
+  });
+</script>

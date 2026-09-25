@@ -1,10 +1,10 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { LANGS, LANG_LABEL, LANG_NAME, t, type Lang } from '../i18n/ui';
+import { t, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 import { waLink } from '../lib/whatsapp';
 import Icon from './Icon.astro';
-import ThemeToggle from './ThemeToggle.astro';
+import MenuPreferencias from './MenuPreferencias.astro';
 
 interface Props {
   lang: Lang;
@@ -38,24 +38,6 @@ const links = [
         {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
       </ul>
 
-      <ul class="langs" aria-label={d.nav.idioma}>
-        {
-          LANGS.map((l) => (
-            <li>
-              <a
-                href={getRelativeLocaleUrl(l, '')}
-                hreflang={l}
-                lang={l}
-                title={LANG_NAME[l]}
-                aria-current={l === lang ? 'true' : undefined}
-              >
-                {LANG_LABEL[l]}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-
       <a href={waLink(d.cta.mensaje)} class="btn btn-wa" target="_blank" rel="noopener">
         <Icon name="chat" />
         {d.nav.cta}
@@ -63,7 +45,7 @@ const links = [
     </nav>
 
     <div class="header-actions">
-      <ThemeToggle lang={lang} />
+      <MenuPreferencias lang={lang} />
       <button class="menu-toggle" type="button" aria-controls="menu" aria-expanded="false" aria-label={d.nav.menu} data-open-label={d.nav.menu} data-close-label={d.nav.cerrar}>
       <span class="icon-open"><Icon name="menu" size={24} /></span>
       <span class="icon-close"><Icon name="close" size={24} /></span>
@@ -140,24 +122,6 @@ const links = [
   .nav-links a:hover {
     color: var(--accent);
   }
-  .langs {
-    gap: 4px;
-  }
-  .langs a {
-    display: grid;
-    place-items: center;
-    min-width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--muted);
-    text-decoration: none;
-  }
-  .langs a[aria-current='true'] {
-    background: var(--accent-soft);
-    color: var(--ink);
-  }
 
   .menu-toggle {
     display: none;
@@ -233,6 +197,8 @@ const links = [
   function setOpen(open: boolean) {
     if (!header || !toggle) return;
     header.classList.toggle('is-open', open);
+    // Avisamos al resto de la página que se abrió este menú (ver MenuPreferencias)
+    if (open) document.dispatchEvent(new CustomEvent('menu:open', { detail: 'nav' }));
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', (open ? toggle.dataset.closeLabel : toggle.dataset.openLabel) ?? '');
   }
@@ -243,6 +209,11 @@ const links = [
 
   // Al tocar un link del menú, se cierra
   header?.querySelectorAll('.nav a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+
+  // Si se abre otro menú (el de idioma/tema), cerramos este
+  document.addEventListener('menu:open', (e) => {
+    if ((e as CustomEvent).detail !== 'nav') setOpen(false);
+  });
 
   // Tecla Escape cierra el menú
   document.addEventListener('keydown', (e) => {

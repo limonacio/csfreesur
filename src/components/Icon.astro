@@ -5,7 +5,7 @@
  * `aria-hidden` porque son decorativos: el texto del botón ya dice qué hace.
  */
 interface Props {
-  name: 'chat' | 'menu' | 'close' | 'van' | 'arrow' | 'arrowUp' | 'sun' | 'moon';
+  name: 'chat' | 'menu' | 'close' | 'van' | 'arrow' | 'arrowUp' | 'sun' | 'moon' | 'globe' | 'chevronDown' | 'check';
   size?: number;
 }
 const { name, size = 20 } = Astro.props;
@@ -46,4 +46,14 @@ const { name, size = 20 } = Astro.props;
     )
   }
   {name === 'moon' && <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" />}
+  {
+    name === 'globe' && (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+      </>
+    )
+  }
+  {name === 'chevronDown' && <path d="M6 9l6 6 6-6" />}
+  {name === 'check' && <path d="M5 12.5l4.5 4.5L19 7.5" />}
 </svg>
