@@ -82,6 +82,51 @@ const jsonLd = {
         document.documentElement.dataset.theme = dark ? 'dark' : 'light';
       })();
     </script>
+
+    {/*
+      Logo día/noche. define:vars pasa datos del servidor (site.ts) a este
+      script del navegador. Para probarlo sin esperar a la noche, agregá
+      ?logo=noche o ?logo=dia al final de la URL.
+    */}
+    <script is:inline define:vars={{ logoCfg: SITE.logo }}>
+      (function () {
+        // "23:30" -> 1410 minutos desde las 00:00
+        function toMin(hhmm) {
+          var p = hhmm.split(':');
+          return Number(p[0]) * 60 + Number(p[1]);
+        }
+        var start = toMin(logoCfg.nightStart);
+        var end = toMin(logoCfg.nightEnd);
+
+        window.__updateLogo = function () {
+          var forced = new URLSearchParams(location.search).get('logo');
+          var night;
+          if (forced === 'noche' || forced === 'dia') {
+            night = forced === 'noche';
+          } else {
+            var now;
+            try {
+              // Hora actual en El Calafate, sin importar dónde esté el visitante
+              now = toMin(
+                new Intl.DateTimeFormat('en-GB', {
+                  timeZone: logoCfg.timeZone,
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hourCycle: 'h23',
+                }).format(new Date())
+              );
+            } catch (e) {
+              var d = new Date(); // navegador muy viejo: usamos su hora local
+              now = d.getHours() * 60 + d.getMinutes();
+            }
+            // El rango cruza la medianoche (23:30 -> 06:00), por eso es un "o"
+            night = start > end ? now >= start || now < end : now >= start && now < end;
+          }
+          document.documentElement.dataset.logo = night ? 'night' : 'day';
+        };
+        window.__updateLogo();
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

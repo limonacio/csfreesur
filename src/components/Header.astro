@@ -5,6 +5,7 @@ import { SITE } from '../config/site';
 import { waLink } from '../lib/whatsapp';
 import Icon from './Icon.astro';
 import MenuPreferencias from './MenuPreferencias.astro';
+import Logo from './Logo.astro';
 
 interface Props {
   lang: Lang;
@@ -23,10 +24,7 @@ const links = [
 <header class="header">
   <div class="container header-inner">
     <a href={getRelativeLocaleUrl(lang, '')} class="brand" aria-label={SITE.fullName}>
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
-        <path d="M3 29 L13 11 L19 20 L24 13 L33 29 Z"></path>
-        <path d="M10 17 L13 11 L16 16"></path>
-      </svg>
+      <Logo />
       <span class="brand-text">
         <span class="brand-name">{SITE.name}</span>
         <span class="brand-sub">Traslados · {SITE.city}</span>

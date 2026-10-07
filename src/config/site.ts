@@ -12,6 +12,17 @@ export const SITE = {
    */
   indexable: false,
 
+  /**
+   * Logo de noche: entre estas horas se muestra logo-noche.png, el resto del
+   * día logo-dia.png. Se usa la hora de El Calafate (no la del visitante), así
+   * todo el mundo ve el mismo logo en el mismo momento.
+   */
+  logo: {
+    timeZone: 'America/Argentina/Rio_Gallegos',
+    nightStart: '23:30',
+    nightEnd: '06:00',
+  },
+
   name: 'CS Free Sur',
   fullName: 'CS Free Sur Traslados',
   city: 'El Calafate',

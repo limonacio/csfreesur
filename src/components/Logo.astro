@@ -1,0 +1,61 @@
+---
+/**
+ * Logo de la marca, con versión de DÍA y de NOCHE.
+ *
+ * Como el sitio es estático (el HTML se genera una sola vez, al hacer build),
+ * el servidor no puede saber qué hora es cuando alguien entra. Entonces:
+ *   1. ponemos LAS DOS imágenes en el HTML
+ *   2. un script en el <head> (Base.astro) mira la hora y marca
+ *      <html data-logo="day"> o <html data-logo="night">
+ *   3. el CSS de abajo muestra una y oculta la otra
+ *
+ * <Image> de Astro convierte los PNG a WebP y genera versiones para
+ * pantallas de alta densidad (retina): pesan unos pocos KB cada una.
+ */
+import { Image } from 'astro:assets';
+import logoDia from '../assets/logo-dia.png';
+import logoNoche from '../assets/logo-noche.png';
+---
+
+<span class="logo">
+  {/* alt="" porque el link que los contiene ya tiene el nombre de la marca */}
+  <Image src={logoDia} alt="" width={56} height={56} densities={[1, 2, 3]} loading="eager" class="logo-dia" />
+  <Image src={logoNoche} alt="" width={56} height={56} densities={[1, 2, 3]} loading="eager" class="logo-noche" />
+</span>
+
+<style>
+  .logo {
+    display: block;
+    width: 56px;
+    height: 56px;
+    flex: none;
+  }
+  .logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  /* Por defecto se ve el de día… */
+  .logo-noche {
+    display: none !important;
+  }
+  /* …y de noche se invierten. :global porque data-logo está en <html> */
+  :global([data-logo='night']) .logo-noche {
+    display: block !important;
+  }
+  :global([data-logo='night']) .logo-dia {
+    display: none !important;
+  }
+  @media (max-width: 960px) {
+    .logo {
+      width: 44px;
+      height: 44px;
+    }
+  }
+</style>
+
+<script>
+  // Re-chequeamos cada minuto: si alguien deja la pestaña abierta y pasan las
+  // 23:30 (o las 6:00), el logo cambia solo. La función la define Base.astro.
+  setInterval(() => (window as any).__updateLogo?.(), 60_000);
+</script>
