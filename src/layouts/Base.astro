@@ -127,7 +127,9 @@ const jsonLd = {
         window.__updateLogo();
       })();
     </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {/* Ícono de la pestaña (.ico con 6 tamaños) + ícono para "Agregar a inicio" en iPhone */}
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
