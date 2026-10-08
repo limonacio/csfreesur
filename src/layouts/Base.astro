@@ -90,7 +90,7 @@ const jsonLd = {
     */}
     <script is:inline define:vars={{ logoCfg: SITE.logo }}>
       (function () {
-        // "23:30" -> 1410 minutos desde las 00:00
+        // "22:00" -> 1320 minutos desde las 00:00
         function toMin(hhmm) {
           var p = hhmm.split(':');
           return Number(p[0]) * 60 + Number(p[1]);
@@ -119,7 +119,7 @@ const jsonLd = {
               var d = new Date(); // navegador muy viejo: usamos su hora local
               now = d.getHours() * 60 + d.getMinutes();
             }
-            // El rango cruza la medianoche (23:30 -> 06:00), por eso es un "o"
+            // El rango cruza la medianoche (22:00 -> 06:00), por eso es un "o"
             night = start > end ? now >= start || now < end : now >= start && now < end;
           }
           document.documentElement.dataset.logo = night ? 'night' : 'day';

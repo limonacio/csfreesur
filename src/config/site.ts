@@ -19,7 +19,7 @@ export const SITE = {
    */
   logo: {
     timeZone: 'America/Argentina/Rio_Gallegos',
-    nightStart: '23:30',
+    nightStart: '22:00',
     nightEnd: '06:00',
   },
 
