@@ -17,7 +17,7 @@ const d = t(Astro.props.lang);
       <Image
         src={fotoVehiculo}
         alt={d.vehiculo.photoAlt}
-        widths={[480, 720, 1040, 1400]}
+        widths={[480, 768]}
         sizes="(max-width: 960px) 92vw, 520px"
         loading="lazy"
       />
@@ -44,7 +44,7 @@ const d = t(Astro.props.lang);
     align-items: center;
   }
   .media {
-    aspect-ratio: 7 / 5;
+    aspect-ratio: 3 / 2; /* misma proporción que la foto: no se recorta nada */
     border-radius: var(--radius);
     background: var(--deep-2);
     overflow: hidden;
