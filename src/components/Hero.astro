@@ -3,7 +3,9 @@ import { t, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 import { DESTINOS } from '../data/destinos';
 import Icon from './Icon.astro';
-import Ilustracion from './Ilustracion.astro';
+import { getImage } from 'astro:assets';
+import heroDesktop from '../assets/hero-desktop.jpg';
+import heroMobile from '../assets/hero-mobile.jpg';
 
 interface Props {
   lang: Lang;
@@ -22,6 +24,15 @@ const pasajeros = Array.from({ length: SITE.vehicle.passengers }, (_, i) => i + 
  */
 const tplConFecha = d.quote.mensaje('{d}', '{f}', '{p}');
 const tplSinFecha = d.quote.mensaje('{d}', '', '{p}');
+
+/*
+ * ART DIRECTION: no es la misma foto achicada, son DOS fotos distintas.
+ * En el celu (≤960px) va la vertical; en la compu, la horizontal.
+ * getImage() genera varias versiones WebP de cada una (srcset) y el navegador
+ * descarga solo la que necesita según el tamaño y la densidad de la pantalla.
+ */
+const fotoDesktop = await getImage({ src: heroDesktop, widths: [640, 960, 1280, 1600], format: 'webp', quality: 80 });
+const fotoMobile = await getImage({ src: heroMobile, widths: [480, 750, 1000], format: 'webp', quality: 80 });
 ---
 
 <section class="hero container">
@@ -60,7 +71,27 @@ const tplSinFecha = d.quote.mensaje('{d}', '', '{p}');
   </div>
 
   <div class="hero-media">
-    <Ilustracion tipo="hero" alt={d.hero.photoAlt} />
+    <picture>
+      <source
+        media="(max-width: 960px)"
+        srcset={fotoMobile.srcSet.attribute}
+        sizes="100vw"
+        width={heroMobile.width}
+        height={heroMobile.height}
+      />
+      {/* fetchpriority="high": es la imagen más importante, que arranque a bajar primero */}
+      <img
+        src={fotoDesktop.src}
+        srcset={fotoDesktop.srcSet.attribute}
+        sizes="(max-width: 1280px) 45vw, 560px"
+        width={heroDesktop.width}
+        height={heroDesktop.height}
+        alt={d.hero.photoAlt}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
     <div class="vehicle-card">
       <span class="vehicle-icon"><Icon name="van" size={26} /></span>
       <span>
@@ -145,20 +176,24 @@ const tplSinFecha = d.quote.mensaje('{d}', '', '{p}');
 
   .hero-media {
     position: relative;
-    aspect-ratio: 640 / 620;
+    aspect-ratio: 4 / 3;
     border-radius: var(--radius-lg);
     overflow: hidden;
     background: var(--ice);
   }
-  .hero-media :global(svg) {
+  .hero-media picture,
+  .hero-media img {
+    display: block;
     width: 100%;
     height: 100%;
+  }
+  .hero-media img {
+    object-fit: cover;
   }
   .vehicle-card {
     position: absolute;
     left: 20px;
-    right: 20px;
-    bottom: 20px;
+    top: 20px;
     padding: 16px 18px;
     background: var(--surface);
     border-radius: 16px;
@@ -206,12 +241,12 @@ const tplSinFecha = d.quote.mensaje('{d}', '', '{p}');
     /* En mobile la imagen va arriba del texto */
     .hero-media {
       order: -1;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 4 / 5; /* foto vertical en el celu */
       border-radius: var(--radius);
     }
     .vehicle-card {
       left: 12px;
-      right: auto;
+      top: auto; /* en mobile va abajo, sobre el ripio */
       bottom: 12px;
       padding: 10px 14px 10px 10px;
       gap: 10px;

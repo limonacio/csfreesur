@@ -38,7 +38,7 @@ const es = {
     title: 'Tu traslado por la Patagonia, puerta a puerta.',
     subtitle:
       'Aeropuerto, Glaciar Perito Moreno, El Chaltén, estancias y Chile en una Chevrolet Spin nueva. Salís a tu hora y parás donde quieras.',
-    photoAlt: 'Ilustración del Glaciar Perito Moreno sobre el lago',
+    photoAlt: 'La Chevrolet Spin de CS Free Sur frente al Glaciar Perito Moreno',
     vehicleTitle: 'Chevrolet Spin 0 km',
     vehicleText: (n: number) => `Hasta ${n} pasajeros con equipaje`,
   },
@@ -159,7 +159,7 @@ const en: Dict = {
     title: 'Your ride across Patagonia, door to door.',
     subtitle:
       'Airport, Perito Moreno Glacier, El Chaltén, estancias and Chile in a brand-new Chevrolet Spin. Leave when you want, stop wherever you like.',
-    photoAlt: 'Illustration of the Perito Moreno Glacier over the lake',
+    photoAlt: 'The CS Free Sur Chevrolet Spin in front of the Perito Moreno Glacier',
     vehicleTitle: 'Brand-new Chevrolet Spin',
     vehicleText: (n: number) => `Up to ${n} passengers with luggage`,
   },
@@ -278,7 +278,7 @@ const pt: Dict = {
     title: 'Seu transfer pela Patagônia, de porta a porta.',
     subtitle:
       'Aeroporto, Geleira Perito Moreno, El Chaltén, estâncias e Chile em uma Chevrolet Spin nova. Saia no seu horário e pare onde quiser.',
-    photoAlt: 'Ilustração da Geleira Perito Moreno sobre o lago',
+    photoAlt: 'A Chevrolet Spin da CS Free Sur diante da Geleira Perito Moreno',
     vehicleTitle: 'Chevrolet Spin 0 km',
     vehicleText: (n: number) => `Até ${n} passageiros com bagagem`,
   },

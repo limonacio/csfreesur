@@ -99,6 +99,7 @@ const links = [
     margin-left: auto;
   }
   .header-actions {
+    flex: none; /* que el botón de idioma nunca se comprima */
     display: flex;
     align-items: center;
     gap: 4px;
@@ -133,6 +134,23 @@ const links = [
   }
   .icon-close {
     display: none;
+  }
+
+  /* Pantallas medianas (laptops chicas, tablets horizontales): achicamos
+     separaciones y escondemos el subtítulo para que el menú entre en 1 renglón */
+  @media (max-width: 1180px) {
+    .header-inner,
+    .nav,
+    .nav-links {
+      gap: 16px;
+    }
+    .brand-sub {
+      display: none;
+    }
+  }
+  .nav-links a,
+  .brand-name {
+    white-space: nowrap;
   }
 
   /* ——— Mobile / tablet ——— */
