@@ -77,7 +77,7 @@ const es = {
   vehiculo: {
     eyebrow: 'La camioneta',
     title: 'Chevrolet Spin nueva, lista para el ripio y el viento.',
-    photoAlt: 'Ilustración de la camioneta Chevrolet Spin',
+    photoAlt: 'La Chevrolet Spin de CS Free Sur en el mirador del Glaciar Perito Moreno',
     features: (n: number) => [
       `Hasta ${n} pasajeros`,
       'Baúl amplio para valijas',
@@ -198,7 +198,7 @@ const en: Dict = {
   vehiculo: {
     eyebrow: 'The vehicle',
     title: 'A new Chevrolet Spin, ready for gravel roads and wind.',
-    photoAlt: 'Illustration of the Chevrolet Spin',
+    photoAlt: 'The CS Free Sur Chevrolet Spin at the Perito Moreno Glacier viewpoint',
     features: (n: number) => [
       `Up to ${n} passengers`,
       'Large trunk for suitcases',
@@ -317,7 +317,7 @@ const pt: Dict = {
   vehiculo: {
     eyebrow: 'O veículo',
     title: 'Chevrolet Spin nova, pronta para o cascalho e o vento.',
-    photoAlt: 'Ilustração da Chevrolet Spin',
+    photoAlt: 'A Chevrolet Spin da CS Free Sur no mirante da Geleira Perito Moreno',
     features: (n: number) => [
       `Até ${n} passageiros`,
       'Porta-malas amplo para bagagens',

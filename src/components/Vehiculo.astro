@@ -1,7 +1,8 @@
 ---
 import { t, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
-import Ilustracion from './Ilustracion.astro';
+import { Image } from 'astro:assets';
+import fotoVehiculo from '../assets/vehiculo.jpg';
 
 interface Props {
   lang: Lang;
@@ -12,7 +13,14 @@ const d = t(Astro.props.lang);
 <section id="vehiculo" class="section container">
   <div class="box">
     <div class="media">
-      <Ilustracion tipo="van" alt={d.vehiculo.photoAlt} />
+      {/* sizes: le dice al navegador qué ancho va a ocupar, para elegir bien del srcset */}
+      <Image
+        src={fotoVehiculo}
+        alt={d.vehiculo.photoAlt}
+        widths={[480, 720, 1040, 1400]}
+        sizes="(max-width: 960px) 92vw, 520px"
+        loading="lazy"
+      />
     </div>
     <div class="copy">
       <span class="eyebrow">{d.vehiculo.eyebrow}</span>
@@ -39,9 +47,13 @@ const d = t(Astro.props.lang);
     aspect-ratio: 7 / 5;
     border-radius: var(--radius);
     background: var(--deep-2);
-    display: grid;
-    place-items: center;
-    padding: 40px;
+    overflow: hidden;
+  }
+  .media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .copy {
     display: flex;

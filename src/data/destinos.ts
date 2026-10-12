@@ -1,4 +1,6 @@
+import type { ImageMetadata } from 'astro';
 import type { Lang } from '../i18n/ui';
+import fotoPeritoMoreno from '../assets/destino-perito-moreno.jpg';
 
 /**
  * Catálogo de destinos.
@@ -25,6 +27,8 @@ export interface Destino {
   destacado?: {
     descripcion: Texto;
     ilustracion: 'glaciar' | 'chalten' | 'aeropuerto';
+    /** Si hay foto real, se usa en lugar de la ilustración */
+    foto?: ImageMetadata;
   };
 }
 
@@ -37,6 +41,7 @@ export const DESTINOS: Destino[] = [
     km: 80,
     destacado: {
       ilustracion: 'glaciar',
+      foto: fotoPeritoMoreno,
       descripcion: {
         es: 'Ida, espera mientras recorrés las pasarelas y regreso. Se puede combinar con Punta Bandera.',
         en: 'Round trip with waiting time while you walk the boardwalks. Can be combined with Punta Bandera.',
