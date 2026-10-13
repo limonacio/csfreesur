@@ -1,6 +1,6 @@
 ---
 import { t, type Lang } from '../i18n/ui';
-import { DESTINOS, type Categoria, type Destino } from '../data/destinos';
+import { DESTINOS_VISIBLES, CATEGORIAS_VISIBLES, type Destino } from '../data/destinos';
 import { waLink } from '../lib/whatsapp';
 import Ilustracion from './Ilustracion.astro';
 import { Image } from 'astro:assets';
@@ -11,9 +11,9 @@ interface Props {
 const { lang } = Astro.props;
 const d = t(lang);
 
-const destacados = DESTINOS.filter((x) => x.destacado);
-const resto = DESTINOS.filter((x) => !x.destacado);
-const categorias: Categoria[] = ['excursion', 'traslado', 'estancia', 'chile'];
+const destacados = DESTINOS_VISIBLES.filter((x) => x.destacado);
+const resto = DESTINOS_VISIBLES.filter((x) => !x.destacado);
+const categorias = CATEGORIAS_VISIBLES;
 
 /** "≈ 80 km", o el texto especial, o "Consultá" */
 function distancia(x: Destino): string {

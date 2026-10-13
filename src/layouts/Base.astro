@@ -27,7 +27,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'TaxiService',
   name: SITE.fullName,
-  areaServed: ['El Calafate', 'El Chaltén', 'Río Gallegos', 'Puerto Natales', 'Punta Arenas'],
+  areaServed: ['El Calafate', 'El Chaltén', 'Río Gallegos', ...(SITE.chile ? ['Puerto Natales', 'Punta Arenas'] : [])],
   telephone: `+${SITE.whatsapp}`,
   email: SITE.email,
   url: canonical,
@@ -46,7 +46,7 @@ const jsonLd = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{dict.meta.title}</title>
-    <meta name="description" content={dict.meta.description} />
+    <meta name="description" content={SITE.chile ? dict.meta.descriptionChile : dict.meta.description} />
     <link rel="canonical" href={canonical} />
     {!SITE.indexable && <meta name="robots" content="noindex, nofollow" />}
 
@@ -57,7 +57,7 @@ const jsonLd = {
     {/* Open Graph: cómo se ve el link al compartirlo por WhatsApp / redes */}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={dict.meta.title} />
-    <meta property="og:description" content={dict.meta.description} />
+    <meta property="og:description" content={SITE.chile ? dict.meta.descriptionChile : dict.meta.description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={LANG_LOCALE[lang]} />
     <meta property="og:site_name" content={SITE.fullName} />

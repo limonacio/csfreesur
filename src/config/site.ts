@@ -23,6 +23,13 @@ export const SITE = {
     nightEnd: '06:00',
   },
 
+  /**
+   * Viajes a Chile (Cancha Carrera, Puerto Natales, Punta Arenas).
+   * false = se ocultan del sitio hasta tener el permiso especial para cruzar
+   * con pasajeros. Los datos NO se borran: para volver a mostrarlos, poné true.
+   */
+  chile: false,
+
   name: 'CS Free Sur',
   fullName: 'CS Free Sur Traslados',
   city: 'El Calafate',

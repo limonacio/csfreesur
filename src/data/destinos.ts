@@ -1,5 +1,6 @@
 import type { ImageMetadata } from 'astro';
 import type { Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
 import fotoPeritoMoreno from '../assets/destino-perito-moreno.jpg';
 
 /**
@@ -129,3 +130,15 @@ export const DESTINOS: Destino[] = [
   { id: 'puerto-natales', nombre: { es: 'Puerto Natales', en: 'Puerto Natales', pt: 'Puerto Natales' }, categoria: 'chile', km: 360 },
   { id: 'punta-arenas', nombre: { es: 'Punta Arenas', en: 'Punta Arenas', pt: 'Punta Arenas' }, categoria: 'chile', km: null },
 ];
+
+/** Categorías que se muestran en los filtros (sin "chile" si está desactivado) */
+export const CATEGORIAS_VISIBLES: Categoria[] = (['excursion', 'traslado', 'estancia', 'chile'] as Categoria[]).filter(
+  (c) => SITE.chile || c !== 'chile'
+);
+
+/**
+ * Lo que efectivamente se muestra en el sitio.
+ * Los componentes usan ESTA lista, no DESTINOS: así un interruptor en
+ * site.ts alcanza para ocultar o mostrar una categoría entera.
+ */
+export const DESTINOS_VISIBLES: Destino[] = DESTINOS.filter((d) => CATEGORIAS_VISIBLES.includes(d.categoria));

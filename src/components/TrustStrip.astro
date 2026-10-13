@@ -1,16 +1,21 @@
 ---
 import { t, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
 
 interface Props {
   lang: Lang;
 }
 const d = t(Astro.props.lang);
+// Con Chile activo se muestra "Cruces a Chile"; sin Chile, "Reservás por WhatsApp"
+const items = d.trust.filter((x: { soloChile?: boolean; sinChile?: boolean }) =>
+  SITE.chile ? !x.sinChile : !x.soloChile
+);
 ---
 
 <div class="container">
   <ul class="trust">
     {
-      d.trust.map((item) => (
+      items.map((item) => (
         <li>
           <strong>{item.title}</strong>
           <span>{item.text}</span>

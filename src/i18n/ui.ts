@@ -18,6 +18,9 @@ const es = {
   meta: {
     title: 'CS Free Sur Traslados | Remis privado en El Calafate',
     description:
+      'Traslados privados desde El Calafate en Chevrolet Spin nueva: aeropuerto, Glaciar Perito Moreno, El Chaltén, estancias y Río Gallegos.',
+    // Versión que se usa cuando SITE.chile = true
+    descriptionChile:
       'Traslados privados desde El Calafate en Chevrolet Spin nueva: aeropuerto, Glaciar Perito Moreno, El Chaltén, estancias, Río Gallegos y Chile (Puerto Natales, Punta Arenas).',
   },
   nav: {
@@ -37,6 +40,8 @@ const es = {
     badge: 'Remis privado desde El Calafate',
     title: 'Tu traslado por la Patagonia, puerta a puerta.',
     subtitle:
+      'Aeropuerto, Glaciar Perito Moreno, El Chaltén, estancias y más, en una Chevrolet Spin nueva. Salís a tu hora y parás donde quieras.',
+    subtitleChile:
       'Aeropuerto, Glaciar Perito Moreno, El Chaltén, estancias y Chile en una Chevrolet Spin nueva. Salís a tu hora y parás donde quieras.',
     photoAlt: 'La Chevrolet Spin de CS Free Sur frente al Glaciar Perito Moreno',
     vehicleTitle: 'Chevrolet Spin 0 km',
@@ -58,7 +63,8 @@ const es = {
     { title: 'Puerta a puerta', text: 'Te buscamos en tu hotel o en el aeropuerto.' },
     { title: 'A tu ritmo', text: 'Paradas para fotos, sin horarios de excursión grupal.' },
     { title: 'Chofer local', text: 'Conoce las rutas, el clima y los tiempos de la zona.' },
-    { title: 'Cruces a Chile', text: 'Puerto Natales y Punta Arenas por Cancha Carrera.' },
+    { title: 'Cruces a Chile', text: 'Puerto Natales y Punta Arenas por Cancha Carrera.', soloChile: true },
+    { title: 'Reservás por WhatsApp', text: 'Un mensaje y coordinamos fecha, horario y punto de encuentro.', sinChile: true },
   ],
   destinos: {
     eyebrow: 'Destinos',
@@ -107,6 +113,7 @@ const es = {
         a: 'Sí. En las excursiones de ida y vuelta el chofer te espera y te trae de regreso. Coordinamos el tiempo de espera al reservar.',
       },
       {
+        chile: true,
         q: '¿Qué documentación necesito para cruzar a Chile?',
         a: 'Documento o pasaporte vigente, según tu nacionalidad. Al reservar te confirmamos los requisitos actualizados del paso fronterizo.',
       },
@@ -139,6 +146,8 @@ const en: Dict = {
   meta: {
     title: 'CS Free Sur Transfers | Private driver in El Calafate',
     description:
+      'Private transfers from El Calafate in a brand-new Chevrolet Spin: airport, Perito Moreno Glacier, El Chaltén, estancias and Río Gallegos.',
+    descriptionChile:
       'Private transfers from El Calafate in a brand-new Chevrolet Spin: airport, Perito Moreno Glacier, El Chaltén, estancias, Río Gallegos and Chile (Puerto Natales, Punta Arenas).',
   },
   nav: {
@@ -158,6 +167,8 @@ const en: Dict = {
     badge: 'Private driver from El Calafate',
     title: 'Your ride across Patagonia, door to door.',
     subtitle:
+      'Airport, Perito Moreno Glacier, El Chaltén, estancias and more, in a brand-new Chevrolet Spin. Leave when you want, stop wherever you like.',
+    subtitleChile:
       'Airport, Perito Moreno Glacier, El Chaltén, estancias and Chile in a brand-new Chevrolet Spin. Leave when you want, stop wherever you like.',
     photoAlt: 'The CS Free Sur Chevrolet Spin in front of the Perito Moreno Glacier',
     vehicleTitle: 'Brand-new Chevrolet Spin',
@@ -179,7 +190,8 @@ const en: Dict = {
     { title: 'Door to door', text: 'Pickup at your hotel or at the airport.' },
     { title: 'At your pace', text: 'Photo stops, no group-tour schedules.' },
     { title: 'Local driver', text: 'Knows the roads, the weather and local timing.' },
-    { title: 'Trips to Chile', text: 'Puerto Natales and Punta Arenas via Cancha Carrera.' },
+    { title: 'Trips to Chile', text: 'Puerto Natales and Punta Arenas via Cancha Carrera.', soloChile: true },
+    { title: 'Book on WhatsApp', text: 'One message and we arrange date, time and pickup point.', sinChile: true },
   ],
   destinos: {
     eyebrow: 'Destinations',
@@ -228,6 +240,7 @@ const en: Dict = {
         a: 'Yes. On round trips the driver waits and brings you back. We agree on waiting time when you book.',
       },
       {
+        chile: true,
         q: 'What documents do I need to cross into Chile?',
         a: 'A valid ID or passport, depending on your nationality. When you book we confirm the current border requirements.',
       },
@@ -258,6 +271,8 @@ const pt: Dict = {
   meta: {
     title: 'CS Free Sur Transfers | Motorista particular em El Calafate',
     description:
+      'Transfers privados desde El Calafate em Chevrolet Spin nova: aeroporto, Geleira Perito Moreno, El Chaltén, estâncias e Río Gallegos.',
+    descriptionChile:
       'Transfers privados desde El Calafate em Chevrolet Spin nova: aeroporto, Geleira Perito Moreno, El Chaltén, estâncias, Río Gallegos e Chile (Puerto Natales, Punta Arenas).',
   },
   nav: {
@@ -277,6 +292,8 @@ const pt: Dict = {
     badge: 'Transfer privado desde El Calafate',
     title: 'Seu transfer pela Patagônia, de porta a porta.',
     subtitle:
+      'Aeroporto, Geleira Perito Moreno, El Chaltén, estâncias e mais, em uma Chevrolet Spin nova. Saia no seu horário e pare onde quiser.',
+    subtitleChile:
       'Aeroporto, Geleira Perito Moreno, El Chaltén, estâncias e Chile em uma Chevrolet Spin nova. Saia no seu horário e pare onde quiser.',
     photoAlt: 'A Chevrolet Spin da CS Free Sur diante da Geleira Perito Moreno',
     vehicleTitle: 'Chevrolet Spin 0 km',
@@ -298,7 +315,8 @@ const pt: Dict = {
     { title: 'Porta a porta', text: 'Buscamos você no hotel ou no aeroporto.' },
     { title: 'No seu ritmo', text: 'Paradas para fotos, sem horários de excursão em grupo.' },
     { title: 'Motorista local', text: 'Conhece as estradas, o clima e os tempos da região.' },
-    { title: 'Viagens ao Chile', text: 'Puerto Natales e Punta Arenas por Cancha Carrera.' },
+    { title: 'Viagens ao Chile', text: 'Puerto Natales e Punta Arenas por Cancha Carrera.', soloChile: true },
+    { title: 'Reserva pelo WhatsApp', text: 'Uma mensagem e combinamos data, horário e ponto de encontro.', sinChile: true },
   ],
   destinos: {
     eyebrow: 'Destinos',
@@ -347,6 +365,7 @@ const pt: Dict = {
         a: 'Sim. Nos passeios de ida e volta o motorista espera e traz você de volta. Combinamos o tempo de espera na reserva.',
       },
       {
+        chile: true,
         q: 'Que documentos preciso para entrar no Chile?',
         a: 'Documento de identidade ou passaporte válido, conforme sua nacionalidade. Na reserva confirmamos os requisitos atualizados da fronteira.',
       },

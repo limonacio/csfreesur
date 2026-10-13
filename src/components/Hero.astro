@@ -1,7 +1,7 @@
 ---
 import { t, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
-import { DESTINOS } from '../data/destinos';
+import { DESTINOS_VISIBLES } from '../data/destinos';
 import Icon from './Icon.astro';
 import { getImage } from 'astro:assets';
 import heroDesktop from '../assets/hero-desktop.jpg';
@@ -13,7 +13,7 @@ interface Props {
 const { lang } = Astro.props;
 const d = t(lang);
 
-const opciones = DESTINOS.map((x) => x.nombre[lang]);
+const opciones = DESTINOS_VISIBLES.map((x) => x.nombre[lang]);
 const pasajeros = Array.from({ length: SITE.vehicle.passengers }, (_, i) => i + 1);
 
 /*
@@ -39,7 +39,7 @@ const fotoMobile = await getImage({ src: heroMobile, widths: [480, 750, 1000], f
   <div class="hero-copy">
     <span class="badge">{d.hero.badge}</span>
     <h1>{d.hero.title}</h1>
-    <p class="lead">{d.hero.subtitle}</p>
+    <p class="lead">{SITE.chile ? d.hero.subtitleChile : d.hero.subtitle}</p>
 
     <form
       class="quote"
