@@ -35,15 +35,15 @@ export const SITE = {
   city: 'El Calafate',
   region: 'Santa Cruz, Patagonia Argentina',
 
-  // TODO: número real, formato internacional SIN "+", espacios ni guiones.
-  // Ejemplo Argentina celular: 549 + código de área sin 0 + número sin 15 → 5492902123456
-  whatsapp: '5492902000000',
+  // Formato internacional SIN "+", espacios ni guiones:
+  // 549 + código de área sin 0 (2902) + número sin 15
+  whatsapp: '5492902403558',
   // Cómo se muestra el número en pantalla
-  whatsappDisplay: '+54 9 2902 00-0000',
+  whatsappDisplay: '+54 9 2902 40-3558',
 
   email: 'contacto@csfreesur.com.ar', // TODO
-  instagram: 'https://instagram.com/csfreesur', // TODO
-  instagramHandle: '@csfreesur', // TODO
+  instagram: 'https://www.instagram.com/csfreesurtraslados/',
+  instagramHandle: '@csfreesurtraslados',
 
   vehicle: {
     model: 'Chevrolet Spin',

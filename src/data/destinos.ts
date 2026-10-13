@@ -3,6 +3,7 @@ import type { Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 import fotoPeritoMoreno from '../assets/destino-perito-moreno.jpg';
 import fotoElChalten from '../assets/destino-el-chalten.jpg';
+import fotoAeropuerto from '../assets/destino-aeropuerto.jpg';
 
 /**
  * Catálogo de destinos.
@@ -73,6 +74,7 @@ export const DESTINOS: Destino[] = [
     km: 20,
     destacado: {
       ilustracion: 'aeropuerto',
+      foto: fotoAeropuerto,
       descripcion: {
         es: 'Te esperamos con cartel a la llegada, aunque el vuelo se demore.',
         en: 'We meet you with a name sign on arrival, even if your flight is delayed.',
