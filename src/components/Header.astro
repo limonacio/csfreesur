@@ -15,7 +15,8 @@ const d = t(lang);
 
 const links = [
   { href: '#destinos', label: d.nav.destinos },
-  { href: '#vehiculo', label: d.nav.vehiculo },
+  // "La camioneta" ya no es una sección: abre la ventana emergente (VehiculoModal.astro)
+  { href: '#vehiculo-modal', label: d.nav.vehiculo, modal: true },
   { href: '#reservar', label: d.nav.reservar },
   { href: '#faq', label: d.nav.faq },
 ];
@@ -33,7 +34,19 @@ const links = [
 
     <nav class="nav" id="menu" aria-label="Principal">
       <ul class="nav-links">
-        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        {
+          links.map((l) => (
+            <li>
+              {'modal' in l ? (
+                <a href={l.href} data-abrir-vehiculo aria-haspopup="dialog" aria-controls="vehiculo-modal">
+                  {l.label}
+                </a>
+              ) : (
+                <a href={l.href}>{l.label}</a>
+              )}
+            </li>
+          ))
+        }
       </ul>
 
       <a href={waLink(d.cta.mensaje)} class="btn btn-wa" target="_blank" rel="noopener">

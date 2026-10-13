@@ -92,10 +92,9 @@ const fotoMobile = await getImage({ src: heroMobile, widths: [480, 750, 1000], f
         decoding="async"
       />
     </picture>
-    {/* Tarjeta: abre la ventana emergente de la camioneta (VehiculoModal.astro).
-        Sin JS, el href lleva a la sección "La camioneta" como plan B */}
+    {/* Tarjeta: abre la ventana emergente de la camioneta (VehiculoModal.astro) */}
     <a
-      href="#vehiculo"
+      href="#vehiculo-modal"
       class="vehicle-card"
       data-abrir-vehiculo
       aria-haspopup="dialog"

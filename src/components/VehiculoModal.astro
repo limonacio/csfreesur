@@ -22,6 +22,10 @@ interface Props {
   lang: Lang;
 }
 const d = t(Astro.props.lang);
+// Mismo filtro que TrustStrip.astro: con Chile apagado sale "Reservás por WhatsApp"
+const confianza = d.trust.filter((x: { soloChile?: boolean; sinChile?: boolean }) =>
+  SITE.chile ? !x.sinChile : !x.soloChile
+);
 ---
 
 <dialog id="vehiculo-modal" class="modal" aria-labelledby="vehiculo-modal-title">
@@ -43,6 +47,17 @@ const d = t(Astro.props.lang);
       <h2 id="vehiculo-modal-title">{d.vehiculo.title}</h2>
       <ul>
         {d.vehiculo.features(SITE.vehicle.passengers).map((f) => <li>{f}</li>)}
+      </ul>
+      {/* Los mismos 4 puntos de la franja de confianza de la home */}
+      <ul class="trust">
+        {
+          confianza.map((item) => (
+            <li>
+              <strong>{item.title}</strong>
+              <span>{item.text}</span>
+            </li>
+          ))
+        }
       </ul>
       <a href={waLink(d.vehiculo.mensaje)} class="btn btn-wa" target="_blank" rel="noopener">
         <Icon name="chat" size={20} />
@@ -163,6 +178,31 @@ const d = t(Astro.props.lang);
     border-radius: 50%;
     background: var(--on-deep-accent);
   }
+  /* Franja de confianza dentro de la ventana */
+  .trust {
+    padding: 20px;
+    gap: 16px 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+  }
+  .trust li {
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .trust li::before {
+    content: none; /* sin el puntito de la lista de arriba */
+  }
+  .trust strong {
+    font-size: 16px;
+    color: var(--on-deep);
+  }
+  .trust span {
+    font-size: 14px;
+    color: var(--on-deep-muted);
+  }
   .btn {
     align-self: flex-start;
   }
@@ -185,8 +225,8 @@ const d = t(Astro.props.lang);
   let disparador: HTMLElement | null = null;
 
   if (modal) {
-    // Abrir: cualquier elemento con data-abrir-vehiculo (hoy, la tarjeta del hero).
-    // El href="#vehiculo" queda como plan B: si el JS no carga, igual te lleva a la sección.
+    // Abrir: cualquier elemento con data-abrir-vehiculo
+    // (hoy: la tarjeta del hero y el link "La camioneta" del menú).
     document.querySelectorAll<HTMLElement>('[data-abrir-vehiculo]').forEach((el) => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
