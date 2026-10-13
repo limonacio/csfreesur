@@ -38,7 +38,12 @@ const year = new Date().getFullYear();
   }
   .links {
     display: flex;
-    gap: 24px;
+    flex-wrap: wrap; /* en pantallas angostas el email y el Instagram bajan de línea */
+    gap: 8px 24px;
+    min-width: 0;
+  }
+  .links a {
+    overflow-wrap: anywhere; /* un email largo nunca empuja el ancho de la página */
   }
   a {
     color: var(--muted);

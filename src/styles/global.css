@@ -99,6 +99,13 @@ html {
   /* Que los anchors (#destinos) no queden tapados por el header fijo */
   scroll-padding-top: calc(var(--header-h) + 16px);
   -webkit-text-size-adjust: 100%;
+  /* Responsive: la página nunca se puede correr de costado.
+     - overflow-x: clip corta cualquier cosa que se pase del ancho (a diferencia
+       de hidden, no rompe position: sticky).
+     - overscroll-behavior-x: none saca el "rebote" lateral y el gesto de
+       deslizar para ir atrás/adelante que mueve toda la página. */
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -109,6 +116,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: clip;
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);

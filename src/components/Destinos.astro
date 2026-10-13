@@ -38,13 +38,26 @@ function distancia(x: Destino): string {
           <div class="card-media">
             {
               x.destacado!.foto ? (
-                <Image
-                  src={x.destacado!.foto}
-                  alt={x.nombre[lang]}
-                  widths={[400, 640, 960]}
-                  sizes="(max-width: 960px) 92vw, 400px"
-                  loading="lazy"
-                />
+                <>
+                  <Image
+                    src={x.destacado!.foto}
+                    alt={x.nombre[lang]}
+                    widths={[400, 640, 960]}
+                    sizes="(max-width: 960px) 92vw, 400px"
+                    loading="lazy"
+                    class={x.destacado!.fotoNoche ? 'foto-dia' : undefined}
+                  />
+                  {x.destacado!.fotoNoche && (
+                    <Image
+                      src={x.destacado!.fotoNoche}
+                      alt={x.nombre[lang]}
+                      widths={[400, 640, 960]}
+                      sizes="(max-width: 960px) 92vw, 400px"
+                      loading="lazy"
+                      class="foto-noche"
+                    />
+                  )}
+                </>
               ) : (
                 <Ilustracion tipo={x.destacado!.ilustracion} alt={x.nombre[lang]} />
               )
@@ -149,6 +162,17 @@ function distancia(x: Destino): string {
   }
   .card-media :global(img) {
     object-fit: cover;
+  }
+  /* Foto de día / de noche: usa el mismo data-logo que pone el script del
+     logo en Base.astro (22:00 a 06:00, hora de El Calafate) */
+  .card-media :global(.foto-noche) {
+    display: none;
+  }
+  :global([data-logo='night']) .card-media :global(.foto-noche) {
+    display: block;
+  }
+  :global([data-logo='night']) .card-media :global(.foto-dia) {
+    display: none;
   }
   .tag {
     position: absolute;

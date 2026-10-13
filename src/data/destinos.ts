@@ -4,6 +4,7 @@ import { SITE } from '../config/site';
 import fotoPeritoMoreno from '../assets/destino-perito-moreno.jpg';
 import fotoElChalten from '../assets/destino-el-chalten.jpg';
 import fotoAeropuerto from '../assets/destino-aeropuerto.jpg';
+import fotoElChaltenNoche from '../assets/destino-el-chalten-noche.jpg';
 
 /**
  * Catálogo de destinos.
@@ -32,6 +33,11 @@ export interface Destino {
     ilustracion: 'glaciar' | 'chalten' | 'aeropuerto';
     /** Si hay foto real, se usa en lugar de la ilustración */
     foto?: ImageMetadata;
+    /**
+     * Opcional: foto alternativa para la NOCHE (mismo horario que el logo,
+     * ver SITE.logo en site.ts). De día se muestra `foto`.
+     */
+    fotoNoche?: ImageMetadata;
   };
 }
 
@@ -60,6 +66,8 @@ export const DESTINOS: Destino[] = [
     destacado: {
       ilustracion: 'chalten',
       foto: fotoElChalten,
+      // Imagen generada con IA (marca de Gemini visible): solo de noche, decisión del cliente
+      fotoNoche: fotoElChaltenNoche,
       descripcion: {
         es: 'Traslado simple o día completo para hacer trekking. También directo desde el aeropuerto.',
         en: 'One-way transfer or full day for trekking. Also direct from the airport.',

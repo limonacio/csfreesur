@@ -202,6 +202,20 @@ const links = [
       display: block;
     }
   }
+
+  /* Celulares muy angostos (iPhone SE 1ª gen, 320 px): todo un poco más junto
+     para que la hamburguesa no quede cortada */
+  @media (max-width: 380px) {
+    .header-inner {
+      gap: 8px;
+    }
+    .brand {
+      gap: 8px;
+    }
+    .brand-name {
+      font-size: 17px;
+    }
+  }
 </style>
 
 <script>
