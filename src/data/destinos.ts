@@ -2,6 +2,7 @@ import type { ImageMetadata } from 'astro';
 import type { Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 import fotoPeritoMoreno from '../assets/destino-perito-moreno.jpg';
+import fotoElChalten from '../assets/destino-el-chalten.jpg';
 
 /**
  * Catálogo de destinos.
@@ -57,6 +58,7 @@ export const DESTINOS: Destino[] = [
     km: 215,
     destacado: {
       ilustracion: 'chalten',
+      foto: fotoElChalten,
       descripcion: {
         es: 'Traslado simple o día completo para hacer trekking. También directo desde el aeropuerto.',
         en: 'One-way transfer or full day for trekking. Also direct from the airport.',
