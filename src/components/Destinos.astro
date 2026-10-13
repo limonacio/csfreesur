@@ -362,13 +362,30 @@ function distancia(x: Destino): string {
       grid-template-columns: 1fr;
     }
     /* En celu/tablet: primero el mapa, abajo la lista */
+    /* Flex y no grid: el sticky de un ítem de grid solo "pega" dentro de su
+       propia fila, así que nunca quedaría fijo */
     .explorer {
-      grid-template-columns: 1fr;
-      gap: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch; /* todo el ancho (en desktop era start) */
+      gap: 16px;
     }
+    /* El mapa queda fijo arriba mientras se recorre la lista */
     .explorer-mapa {
-      position: static;
       order: -1;
+      top: var(--header-h);
+      z-index: 5;
+      margin-inline: calc(-1 * var(--gutter));
+      padding: 8px var(--gutter) 10px;
+      background: var(--bg);
+      box-shadow: 0 10px 14px -12px rgba(0, 0, 0, 0.35);
+    }
+    /* Si un botón de la lista recibe el foco (teclado), el navegador lo
+       acomoda a la vista sin dejarlo tapado por el mapa fijo ni por la barra
+       de WhatsApp */
+    .list :is(a, button) {
+      scroll-margin-top: calc(var(--header-h) + clamp(170px, 30svh, 360px) + 110px);
+      scroll-margin-bottom: 96px;
     }
     .list {
       grid-template-columns: repeat(2, minmax(0, 1fr));

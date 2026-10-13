@@ -41,7 +41,7 @@ export const SITE = {
   // Cómo se muestra el número en pantalla
   whatsappDisplay: '+54 9 2902 40-3558',
 
-  email: 'contacto@csfreesur.com.ar', // TODO
+  email: 'csfreetraslados@gmail.com',
   instagram: 'https://www.instagram.com/csfreesurtraslados/',
   instagramHandle: '@csfreesurtraslados',
 

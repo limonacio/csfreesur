@@ -47,14 +47,22 @@ function bbox(pts: Punto[]): string {
   return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)].join(' ');
 }
 
+const [cx, cy] = xy(CALAFATE);
+
 const items = destinos.map((x) => {
   const rec = RECORRIDOS[x.id] ?? {};
   const puntos = rec.ruta ?? rec.zona ?? [];
+  // El pin va al final del recorrido. Los "a medida" (zona) no tienen pin propio.
+  const pin = rec.ruta ? rec.ruta[rec.ruta.length - 1] : undefined;
   return {
     x,
     ruta: rec.ruta,
-    // El pin va al final del recorrido. Los "a medida" (zona) no tienen pin propio.
-    pin: rec.ruta ? rec.ruta[rec.ruta.length - 1] : undefined,
+    pin,
+    // El nombre del destino va del lado contrario a El Calafate, así nunca se
+    // pisan (ej: Punta Bandera queda al oeste → su nombre va a la izquierda)
+    lado: pin && xy(pin)[0] < cx ? 'izq' : 'der',
+    // Ancho aproximado del nombre en píxeles (para dejarle lugar al hacer zoom)
+    etiqueta: Math.round(x.nombre[lang].length * 7.4 + 16),
     bbox: puntos.length ? bbox([CALAFATE, ...puntos]) : undefined,
   };
 });
@@ -64,7 +72,6 @@ function distancia(x: Destino): string {
   return x.distanciaTexto?.[lang] ?? d.destinos.consulta;
 }
 
-const [cx, cy] = xy(CALAFATE);
 // Encuadre de "ver todo": El Calafate, los pueblos y todos los pines
 const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((i) => (i.pin ? [i.pin] : []))]);
 ---
@@ -140,7 +147,12 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
                 <g class="esc">
                   <circle r="11" class="pin-halo" />
                   <circle r="5" class="pin-punto" />
-                  <text class="txt-pin" x="10" dy="4">
+                  <text
+                    class="txt-pin"
+                    x={i.lado === 'izq' ? -10 : 10}
+                    dy="4"
+                    text-anchor={i.lado === 'izq' ? 'end' : 'start'}
+                  >
                     {i.x.nombre[lang]}
                   </text>
                 </g>
@@ -164,7 +176,14 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     <p class="info-ayuda" data-info="">{d.mapa.ayuda}</p>
     {
       items.map((i) => (
-        <div class="info-item" data-info={i.x.id} data-bbox={i.bbox} hidden>
+        <div
+          class="info-item"
+          data-info={i.x.id}
+          data-bbox={i.bbox}
+          data-lado={i.lado}
+          data-etiqueta={i.etiqueta}
+          hidden
+        >
           <div class="info-texto">
             <span class="info-cat">{d.destinos.cat[i.x.categoria]}</span>
             <h3>{i.x.nombre[lang]}</h3>
@@ -175,10 +194,12 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
           <div class="info-acciones">
             <a href={waLink(d.destinos.mensaje(i.x.nombre[lang]))} class="btn btn-wa" target="_blank" rel="noopener">
               <Icon name="chat" size={20} />
-              {d.mapa.consultar}
+              <span class="largo">{d.mapa.consultar}</span>
+              <span class="corto">WhatsApp</span>
             </a>
             <button type="button" class="ver-todo" data-ver-todo>
-              {d.mapa.verTodo}
+              <span class="largo">{d.mapa.verTodo}</span>
+              <span class="corto">{d.mapa.verTodoCorto}</span>
             </button>
           </div>
         </div>
@@ -193,6 +214,11 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     display: flex;
     flex-direction: column;
     gap: 12px;
+    /* al traer el mapa a la vista, que no quede tapado por el header */
+    scroll-margin-top: calc(var(--header-h) + 12px);
+  }
+  .corto {
+    display: none;
   }
   .lienzo {
     aspect-ratio: 4 / 3;
@@ -425,14 +451,72 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     font-size: 13px;
     color: var(--muted);
   }
-  @media (max-width: 560px) {
-    .lienzo {
-      aspect-ratio: 1 / 1;
+  /* Celu y tablet: el mapa queda fijo arriba mientras se recorre la lista
+     (el sticky lo pone Destinos.astro), así que todo va más compacto */
+  @media (max-width: 960px) {
+    .mapa {
+      --alto-mapa: clamp(170px, 30svh, 360px);
+      position: relative;
+      gap: 6px;
     }
-    .info-acciones,
+    .lienzo {
+      aspect-ratio: auto;
+      height: var(--alto-mapa);
+    }
+    .info {
+      min-height: 0;
+      padding: 10px 14px;
+    }
+    .info-ayuda {
+      font-size: 14px;
+    }
+    .info-item {
+      flex-wrap: nowrap;
+      gap: 10px;
+    }
+    .info-cat {
+      font-size: 11px;
+    }
+    .info h3 {
+      font-size: 18px;
+    }
+    .info p {
+      font-size: 13px;
+    }
+    .info-acciones {
+      flex: none;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0;
+    }
     .info-acciones .btn {
-      width: 100%;
-      justify-content: center;
+      min-height: 40px;
+      padding: 0 14px;
+      font-size: 14px;
+    }
+    .ver-todo {
+      min-height: 32px;
+      padding: 0 4px;
+      font-size: 13px;
+    }
+    .largo {
+      display: none;
+    }
+    .corto {
+      display: inline;
+    }
+    /* El aviso va sobre el mapa (abajo a la izquierda) para ahorrar una fila */
+    .aviso {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      top: calc(var(--alto-mapa) - 26px);
+      width: fit-content;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--map-land);
+      font-size: 10px;
+      pointer-events: none;
     }
   }
 </style>
@@ -449,18 +533,20 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     let destino = '';
 
     /** Ajusta una caja a la proporción del recuadro, con aire alrededor */
-    function encuadrar(x0: number, y0: number, x1: number, y1: number): Caja {
+    function encuadrar(x0: number, y0: number, x1: number, y1: number, lado = 'der', etiqueta = 100): Caja {
       let w = x1 - x0;
       let h = y1 - y0;
       const pad = Math.max(w, h) * 0.12 + 6;
-      // Lugar para los nombres, calculado en PÍXELES de pantalla:
-      // ~50 px a la izquierda (media etiqueta de El Calafate, que va centrada)
-      // y ~100 px a la derecha (los nombres de los destinos van a la derecha).
-      // Como 1 px = w / ancho, despejamos cuántas unidades del SVG son.
+      // Lugar para los nombres, calculado en PÍXELES de pantalla: del lado
+      // del destino, el ancho de su nombre; del otro, ~50 px (media etiqueta
+      // de El Calafate, que va centrada). Como 1 px = w / ancho del recuadro,
+      // despejamos cuántas unidades del SVG son.
       const cw = svg!.clientWidth || 600;
-      const izq = (50 * (w + pad * 2)) / Math.max(cw - 150, 100);
+      const pxIzq = lado === 'izq' ? etiqueta : 50;
+      const pxDer = lado === 'izq' ? 50 : etiqueta;
+      const izq = (pxIzq * (w + pad * 2)) / Math.max(cw - pxIzq - pxDer, 100);
       const base = w + pad * 2 + izq;
-      const der = (100 * base) / Math.max(cw - 100, 100);
+      const der = (pxDer * base) / Math.max(cw - pxDer, 100);
       x0 -= pad + izq;
       y0 -= pad + 8; // arriba, el nombre de El Calafate
       w = base + der;
@@ -497,9 +583,10 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     }
 
     function cajaDe(id: string): Caja {
-      const bb = mapa!.querySelector<HTMLElement>(`.info-item[data-info="${id}"]`)?.dataset.bbox;
+      const item = mapa!.querySelector<HTMLElement>(`.info-item[data-info="${id}"]`);
+      const bb = item?.dataset.bbox;
       const [x0, y0, x1, y1] = bb ? bb.split(' ').map(Number) : bbTotal;
-      return encuadrar(x0, y0, x1, y1);
+      return encuadrar(x0, y0, x1, y1, item?.dataset.lado, Number(item?.dataset.etiqueta) || 100);
     }
 
     function elegir(id: string) {
@@ -523,10 +610,12 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     document.querySelectorAll<HTMLElement>('[data-destino]').forEach((b) =>
       b.addEventListener('click', () => {
         elegir(b.dataset.destino!);
-        // En el celu el mapa queda arriba: si no se ve, lo traemos a la vista
+        // Si el mapa no se ve (ej: tocaste "Ver recorrido" en una tarjeta de
+        // arriba), lo traemos a la vista. Desde la lista no hace falta: el
+        // mapa ya está fijo arriba.
         const r = mapa.getBoundingClientRect();
         if (r.top < 0 || r.bottom > window.innerHeight) {
-          mapa.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'center' });
+          mapa.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'start' });
         }
       })
     );
