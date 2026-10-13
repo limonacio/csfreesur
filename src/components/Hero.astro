@@ -92,13 +92,15 @@ const fotoMobile = await getImage({ src: heroMobile, widths: [480, 750, 1000], f
         decoding="async"
       />
     </picture>
-    <div class="vehicle-card">
+    {/* Tarjeta-link: lleva a la sección "La camioneta" (#vehiculo) */}
+    <a href="#vehiculo" class="vehicle-card">
       <span class="vehicle-icon"><Icon name="van" size={26} /></span>
-      <span>
+      <span class="vehicle-text">
         <strong>{d.hero.vehicleTitle}</strong>
         <span>{d.hero.vehicleText(SITE.vehicle.passengers)}</span>
       </span>
-    </div>
+      <span class="vehicle-go" aria-hidden="true"><Icon name="arrow" size={18} /></span>
+    </a>
   </div>
 </section>
 
@@ -200,8 +202,35 @@ const fotoMobile = await getImage({ src: heroMobile, widths: [480, 750, 1000], f
     display: flex;
     align-items: center;
     gap: 14px;
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
   }
-  .vehicle-card > span:last-child {
+  .vehicle-card:hover {
+    color: var(--ink);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-float);
+  }
+  /* Flechita que se desplaza al pasar el mouse: indica que es clickeable */
+  .vehicle-go {
+    display: grid;
+    margin-left: 4px;
+    color: var(--accent);
+    transition: transform 0.15s ease;
+  }
+  .vehicle-card:hover .vehicle-go {
+    transform: translateX(3px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vehicle-card,
+    .vehicle-go {
+      transition: none;
+    }
+  }
+  .vehicle-text {
     display: flex;
     flex-direction: column;
     font-size: 14px;
