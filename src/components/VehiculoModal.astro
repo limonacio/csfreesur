@@ -22,7 +22,8 @@ interface Props {
   lang: Lang;
 }
 const d = t(Astro.props.lang);
-// Mismo filtro que TrustStrip.astro: con Chile apagado sale "Reservás por WhatsApp"
+// Puntos de confianza (d.trust en ui.ts). Viven SOLO acá, no se repiten en la página.
+// Con Chile apagado sale "Reservás por WhatsApp" en vez de "Cruces a Chile"
 const confianza = d.trust.filter((x: { soloChile?: boolean; sinChile?: boolean }) =>
   SITE.chile ? !x.sinChile : !x.soloChile
 );
@@ -48,7 +49,7 @@ const confianza = d.trust.filter((x: { soloChile?: boolean; sinChile?: boolean }
       <ul>
         {d.vehiculo.features(SITE.vehicle.passengers).map((f) => <li>{f}</li>)}
       </ul>
-      {/* Los mismos 4 puntos de la franja de confianza de la home */}
+      {/* Puntos de confianza */}
       <ul class="trust">
         {
           confianza.map((item) => (
