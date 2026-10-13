@@ -26,7 +26,6 @@ const es = {
   nav: {
     destinos: 'Destinos',
     vehiculo: 'La camioneta',
-    reservar: 'Cómo reservar',
     faq: 'Preguntas',
     cta: 'Reservar',
     menu: 'Abrir menú',
@@ -96,14 +95,6 @@ const es = {
       'Paradas para fotos cuando quieras',
     ],
   },
-  pasos: {
-    title: 'Reservar es un mensaje',
-    items: [
-      { title: 'Escribinos por WhatsApp', text: 'Contanos fecha, destino, cantidad de pasajeros y valijas.' },
-      { title: 'Te pasamos precio y horario', text: 'Confirmás y queda reservado a tu nombre.' },
-      { title: 'Te buscamos', text: 'En tu hotel, cabaña o en el aeropuerto, a la hora acordada.' },
-    ],
-  },
   faq: {
     title: 'Preguntas frecuentes',
     items: [
@@ -156,7 +147,6 @@ const en: Dict = {
   nav: {
     destinos: 'Destinations',
     vehiculo: 'The vehicle',
-    reservar: 'How to book',
     faq: 'FAQ',
     cta: 'Book',
     menu: 'Open menu',
@@ -226,14 +216,6 @@ const en: Dict = {
       'Photo stops whenever you want',
     ],
   },
-  pasos: {
-    title: 'Booking is one message',
-    items: [
-      { title: 'Message us on WhatsApp', text: 'Tell us date, destination, passengers and luggage.' },
-      { title: 'Get price and pickup time', text: 'Confirm and the ride is booked under your name.' },
-      { title: 'We pick you up', text: 'At your hotel, cabin or the airport, on time.' },
-    ],
-  },
   faq: {
     title: 'Frequently asked questions',
     items: [
@@ -284,7 +266,6 @@ const pt: Dict = {
   nav: {
     destinos: 'Destinos',
     vehiculo: 'O veículo',
-    reservar: 'Como reservar',
     faq: 'Perguntas',
     cta: 'Reservar',
     menu: 'Abrir menu',
@@ -352,14 +333,6 @@ const pt: Dict = {
       'Habilitada e com seguro de passageiros',
       'Cadeirinhas infantis sob pedido',
       'Paradas para fotos quando quiser',
-    ],
-  },
-  pasos: {
-    title: 'Reservar é uma mensagem',
-    items: [
-      { title: 'Escreva no WhatsApp', text: 'Conte a data, o destino, os passageiros e as malas.' },
-      { title: 'Receba preço e horário', text: 'Confirme e a reserva fica no seu nome.' },
-      { title: 'Buscamos você', text: 'No hotel, na cabana ou no aeroporto, no horário combinado.' },
     ],
   },
   faq: {
