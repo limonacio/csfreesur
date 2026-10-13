@@ -29,6 +29,14 @@
   --on-accent: #ffffff; /* texto sobre botones de color acento */
   --on-ink: #ffffff; /* texto sobre fondos color --ink (ej: filtro activo) */
 
+  /* Mapa ilustrado (Mapa.astro) */
+  --map-land: #eef2ef;
+  --map-water: #b6d9e6;
+  --map-water-ink: #2f6b82;
+  --map-ice: #ffffff;
+  --map-road: #c4cfd3;
+  --map-label: #4a5c68;
+
   /* Tipografía */
   --font-display: 'Fraunces Variable', Georgia, serif;
   --font-body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -71,6 +79,12 @@
   --ice-ink: #b9d3de;
   --deep: #132d41;
   --deep-2: #1d4058;
+  --map-land: #0f1e29;
+  --map-water: #18465c;
+  --map-water-ink: #8cc4d8;
+  --map-ice: #1d3343;
+  --map-road: #2c4556;
+  --map-label: #9fb3bd;
   --shadow: 0 12px 32px -18px rgba(0, 0, 0, 0.7);
   --shadow-float: 0 10px 24px -8px rgba(0, 0, 0, 0.7);
   color-scheme: dark;

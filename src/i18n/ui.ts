@@ -79,6 +79,15 @@ const es = {
     mensaje: (d: string) => `Hola! Quiero consultar un traslado a ${d}. ¿Me pasan precio y disponibilidad?`,
     mensajeOtro: 'Hola! Quiero consultar por un traslado a otro destino.',
   },
+  mapa: {
+    alt: 'Mapa ilustrativo de la zona de El Calafate con los recorridos a cada destino',
+    ayuda: 'Tocá un destino para ver el recorrido desde El Calafate.',
+    desde: 'Desde El Calafate',
+    verRecorrido: 'Ver recorrido',
+    verTodo: 'Ver todo el mapa',
+    consultar: 'Consultar por WhatsApp',
+    aviso: 'Mapa ilustrativo: los recorridos y las distancias son aproximados.',
+  },
   vehiculo: {
     eyebrow: 'La camioneta',
     title: 'Chevrolet Spin nueva, lista para el ripio y el viento.',
@@ -200,6 +209,15 @@ const en: Dict = {
     mensaje: (d: string) => `Hi! I'd like a quote for a transfer to ${d}. Could you send me price and availability?`,
     mensajeOtro: "Hi! I'd like a quote for a transfer to another destination.",
   },
+  mapa: {
+    alt: 'Illustrated map of the El Calafate area with the route to each destination',
+    ayuda: 'Tap a destination to see the route from El Calafate.',
+    desde: 'From El Calafate',
+    verRecorrido: 'See route',
+    verTodo: 'See full map',
+    consultar: 'Ask on WhatsApp',
+    aviso: 'Illustrative map: routes and distances are approximate.',
+  },
   vehiculo: {
     eyebrow: 'The vehicle',
     title: 'A new Chevrolet Spin, ready for gravel roads and wind.',
@@ -318,6 +336,15 @@ const pt: Dict = {
     otroTexto: 'Consulte-nos',
     mensaje: (d: string) => `Olá! Quero consultar um transfer para ${d}. Podem me passar preço e disponibilidade?`,
     mensajeOtro: 'Olá! Quero consultar um transfer para outro destino.',
+  },
+  mapa: {
+    alt: 'Mapa ilustrativo da região de El Calafate com o trajeto até cada destino',
+    ayuda: 'Toque em um destino para ver o trajeto desde El Calafate.',
+    desde: 'Saindo de El Calafate',
+    verRecorrido: 'Ver trajeto',
+    verTodo: 'Ver mapa completo',
+    consultar: 'Consultar pelo WhatsApp',
+    aviso: 'Mapa ilustrativo: trajetos e distâncias são aproximados.',
   },
   vehiculo: {
     eyebrow: 'O veículo',

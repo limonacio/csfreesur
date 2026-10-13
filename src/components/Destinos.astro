@@ -3,6 +3,8 @@ import { t, type Lang } from '../i18n/ui';
 import { DESTINOS_VISIBLES, CATEGORIAS_VISIBLES, type Destino } from '../data/destinos';
 import { waLink } from '../lib/whatsapp';
 import Ilustracion from './Ilustracion.astro';
+import Mapa from './Mapa.astro';
+import Icon from './Icon.astro';
 import { Image } from 'astro:assets';
 
 interface Props {
@@ -68,7 +70,11 @@ function distancia(x: Destino): string {
             <h3>{x.nombre[lang]}</h3>
             <p>{x.destacado!.descripcion[lang]}</p>
             <div class="card-foot">
-              <span class="dist">{distancia(x)}</span>
+              {/* Abre el recorrido en el mapa de abajo */}
+              <button type="button" class="dist" data-destino={x.id} aria-pressed="false">
+                <Icon name="pin" size={18} />
+                {d.mapa.verRecorrido} · {distancia(x)}
+              </button>
               <a href={waLink(d.destinos.mensaje(x.nombre[lang]))} target="_blank" rel="noopener">
                 {d.destinos.consultar} →
               </a>
@@ -79,6 +85,9 @@ function distancia(x: Destino): string {
     }
   </div>
 
+  {/* Lista + mapa: al tocar un destino, el mapa muestra el recorrido */}
+  <div class="explorer">
+  <div class="explorer-lista">
   {/* Filtros: botones con aria-pressed (accesibles) + un script chico abajo */}
   <div class="filters" role="group" aria-label={d.destinos.eyebrow}>
     <button type="button" data-filter="all" aria-pressed="true">{d.destinos.todos}</button>
@@ -95,15 +104,15 @@ function distancia(x: Destino): string {
     {
       resto.map((x) => (
         <li data-cat={x.categoria}>
-          <a href={waLink(d.destinos.mensaje(x.nombre[lang]))} target="_blank" rel="noopener">
+          <button type="button" data-destino={x.id} aria-pressed="false">
             <span>
               <strong>{x.nombre[lang]}</strong>
               <small>
                 {d.destinos.cat[x.categoria]} · {distancia(x)}
               </small>
             </span>
-            <span class="arrow" aria-hidden="true">→</span>
-          </a>
+            <span class="arrow" aria-hidden="true"><Icon name="pin" size={20} /></span>
+          </button>
         </li>
       ))
     }
@@ -117,6 +126,11 @@ function distancia(x: Destino): string {
       </a>
     </li>
   </ul>
+  </div>
+  <div class="explorer-mapa">
+    <Mapa lang={lang} destinos={DESTINOS_VISIBLES} />
+  </div>
+  </div>
 </section>
 
 <style>
@@ -215,16 +229,47 @@ function distancia(x: Destino): string {
     align-items: center;
   }
   .dist {
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: inherit;
     font-size: 15px;
     font-weight: 600;
     color: var(--muted);
+    cursor: pointer;
+  }
+  .dist:hover,
+  .dist[aria-pressed='true'] {
+    color: var(--accent);
+  }
+
+  /* ——— Lista + mapa ——— */
+  .explorer {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 32px;
+    align-items: start;
+  }
+  /* min-width: 0 evita que los chips (que scrollean de costado en el celu)
+     estiren la columna más allá de la pantalla */
+  .explorer > * {
+    min-width: 0;
+  }
+  .explorer-mapa {
+    position: sticky;
+    top: calc(var(--header-h) + 16px);
   }
 
   .filters {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin: 40px 0 20px;
+    margin: 0 0 16px;
   }
   .filters button {
     height: 44px;
@@ -248,13 +293,18 @@ function distancia(x: Destino): string {
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
   .list li[hidden] {
     display: none;
   }
-  .list a {
+  .list a,
+  .list button {
+    width: 100%;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
     min-height: 76px;
     height: 100%;
     padding: 16px 18px;
@@ -269,10 +319,16 @@ function distancia(x: Destino): string {
     color: var(--ink);
     transition: border-color 0.15s ease;
   }
-  .list a:hover {
+  .list a:hover,
+  .list button:hover {
     border-color: var(--accent);
   }
-  .list a > span:first-child {
+  /* El destino elegido queda marcado */
+  .list button[aria-pressed='true'] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .list :is(a, button) > span:first-child {
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -286,13 +342,14 @@ function distancia(x: Destino): string {
     color: var(--muted);
   }
   .arrow {
+    display: grid;
     font-size: 20px;
     color: var(--accent);
   }
 
   @media (max-width: 1100px) {
     .list {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: 1fr;
     }
   }
   @media (max-width: 960px) {
@@ -303,6 +360,15 @@ function distancia(x: Destino): string {
     }
     .featured {
       grid-template-columns: 1fr;
+    }
+    /* En celu/tablet: primero el mapa, abajo la lista */
+    .explorer {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .explorer-mapa {
+      position: static;
+      order: -1;
     }
     .list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -329,12 +395,15 @@ function distancia(x: Destino): string {
   // Filtro por categoría: muestra/oculta tarjetas con el atributo `hidden`.
   const botones = document.querySelectorAll<HTMLButtonElement>('.filters button');
   const items = document.querySelectorAll<HTMLLIElement>('.list li');
+  const mapa = document.querySelector<HTMLElement>('[data-mapa]');
 
   botones.forEach((btn) => {
     btn.addEventListener('click', () => {
       const filtro = btn.dataset.filter;
 
       botones.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      // El mapa resalta los pines de esa categoría
+      if (mapa && filtro) mapa.dataset.filtro = filtro;
 
       items.forEach((li) => {
         const cat = li.dataset.cat;

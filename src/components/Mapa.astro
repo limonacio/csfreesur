@@ -1,0 +1,545 @@
+---
+/**
+ * Mapa ilustrado de la zona: al elegir un destino se dibuja el recorrido
+ * desde El Calafate y el mapa hace zoom hasta encuadrarlo.
+ *
+ * Tip de senior: TODO se calcula en el build (Astro corre esto en Node):
+ * las coordenadas se proyectan a SVG, los recorridos y los encuadres
+ * (bbox) salen como atributos data-*. El JS del navegador solo cambia
+ * clases y anima el viewBox: no hay librerías de mapas ni servidores.
+ *
+ * Los datos geográficos están en src/data/mapa.ts (son aproximados).
+ */
+import { t, type Lang } from '../i18n/ui';
+import type { Destino } from '../data/destinos';
+import { waLink } from '../lib/whatsapp';
+import Icon from './Icon.astro';
+import {
+  proyectar,
+  LAGOS,
+  RIO,
+  HIELO,
+  GLACIARES,
+  RUTAS,
+  CALAFATE,
+  PUEBLOS,
+  RECORRIDOS,
+  type Punto,
+} from '../data/mapa';
+
+interface Props {
+  lang: Lang;
+  destinos: Destino[];
+}
+const { lang, destinos } = Astro.props;
+const d = t(lang);
+
+/** Lista de puntos → atributo `d` de un <path> */
+const linea = (pts: Punto[]) => 'M' + pts.map((p) => proyectar(p).join(' ')).join(' L');
+const poligono = (pts: Punto[]) => linea(pts) + ' Z';
+const xy = (p: Punto) => proyectar(p);
+
+/** Rectángulo que encierra los puntos, en unidades del SVG */
+function bbox(pts: Punto[]): string {
+  const ps = pts.map(proyectar);
+  const xs = ps.map((p) => p[0]);
+  const ys = ps.map((p) => p[1]);
+  return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)].join(' ');
+}
+
+const items = destinos.map((x) => {
+  const rec = RECORRIDOS[x.id] ?? {};
+  const puntos = rec.ruta ?? rec.zona ?? [];
+  return {
+    x,
+    ruta: rec.ruta,
+    // El pin va al final del recorrido. Los "a medida" (zona) no tienen pin propio.
+    pin: rec.ruta ? rec.ruta[rec.ruta.length - 1] : undefined,
+    bbox: puntos.length ? bbox([CALAFATE, ...puntos]) : undefined,
+  };
+});
+
+function distancia(x: Destino): string {
+  if (x.km !== null) return `${d.approx} ${x.km} km`;
+  return x.distanciaTexto?.[lang] ?? d.destinos.consulta;
+}
+
+const [cx, cy] = xy(CALAFATE);
+// Encuadre de "ver todo": El Calafate, los pueblos y todos los pines
+const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((i) => (i.pin ? [i.pin] : []))]);
+---
+
+<div class="mapa" data-mapa>
+  <div class="lienzo">
+    <svg
+      viewBox={(() => { const [a, b, c, e] = bboxTotal.split(' ').map(Number); return `${a - 10} ${b - 10} ${c - a + 70} ${e - b + 20}`; })()}
+      data-bbox-total={bboxTotal}
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label={d.mapa.alt}
+    >
+      {/* Fondo bien grande: al hacer zoom nunca se ve el borde */}
+      <rect x="-600" y="-600" width="1500" height="1500" class="tierra"></rect>
+      <path d={poligono(HIELO)} class="hielo"></path>
+      {GLACIARES.map((g) => <path d={poligono(g)} class="hielo" />)}
+      <path d={linea(RIO)} class="rio"></path>
+      {LAGOS.map((l) => <path d={poligono(l.contorno)} class="agua" />)}
+
+      {RUTAS.map((r) => <path d={linea(r.puntos)} class="ruta-fondo" />)}
+
+      {/* Recorridos (uno por destino, ocultos hasta que se elige) */}
+      {
+        items.map(
+          (i) => i.ruta && <path d={linea(i.ruta)} class="recorrido" data-ruta={i.x.id} pathLength="1" />
+        )
+      }
+
+      {/* Textos: cada uno va en un <g> trasladado + otro escalado por CSS,
+          así mantienen el mismo tamaño en pantalla aunque hagamos zoom */}
+      {
+        LAGOS.map((l) => (
+          <g transform={`translate(${xy(l.label).join(' ')})`}>
+            <g class="esc">
+              <text class="txt-lago" text-anchor="middle">
+                {l.nombre}
+              </text>
+            </g>
+          </g>
+        ))
+      }
+      {
+        RUTAS.filter((r) => r.label).map((r) => (
+          <g transform={`translate(${xy(r.label!).join(' ')})`}>
+            <g class="esc">
+              <text class="txt-ruta" text-anchor="middle" dy="4">
+                {r.nombre.trim()}
+              </text>
+            </g>
+          </g>
+        ))
+      }
+      {
+        PUEBLOS.map((p) => (
+          <g transform={`translate(${xy(p.p).join(' ')})`}>
+            <g class="esc">
+              <circle r="3.5" class="pueblo" />
+              <text class="txt-pueblo" x="7" dy="4">
+                {p.nombre}
+              </text>
+            </g>
+          </g>
+        ))
+      }
+
+      {/* Pines de los destinos */}
+      {
+        items.map(
+          (i) =>
+            i.pin && (
+              <g transform={`translate(${xy(i.pin).join(' ')})`} class="pin" data-pin={i.x.id} data-cat={i.x.categoria}>
+                <g class="esc">
+                  <circle r="11" class="pin-halo" />
+                  <circle r="5" class="pin-punto" />
+                  <text class="txt-pin" x="10" dy="4">
+                    {i.x.nombre[lang]}
+                  </text>
+                </g>
+              </g>
+            )
+        )
+      }
+
+      {/* El Calafate: el punto de partida, siempre visible */}
+      <g transform={`translate(${cx} ${cy})`}>
+        <g class="esc">
+          <circle r="9" class="origen-anillo"></circle>
+          <circle r="5" class="origen"></circle>
+          <text class="txt-origen" dy="-15" text-anchor="middle">El Calafate</text>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="info" aria-live="polite">
+    <p class="info-ayuda" data-info="">{d.mapa.ayuda}</p>
+    {
+      items.map((i) => (
+        <div class="info-item" data-info={i.x.id} data-bbox={i.bbox} hidden>
+          <div class="info-texto">
+            <span class="info-cat">{d.destinos.cat[i.x.categoria]}</span>
+            <h3>{i.x.nombre[lang]}</h3>
+            <p>
+              {d.mapa.desde} · {distancia(i.x)}
+            </p>
+          </div>
+          <div class="info-acciones">
+            <a href={waLink(d.destinos.mensaje(i.x.nombre[lang]))} class="btn btn-wa" target="_blank" rel="noopener">
+              <Icon name="chat" size={20} />
+              {d.mapa.consultar}
+            </a>
+            <button type="button" class="ver-todo" data-ver-todo>
+              {d.mapa.verTodo}
+            </button>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <p class="aviso">{d.mapa.aviso}</p>
+</div>
+
+<style>
+  .mapa {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .lienzo {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    background: var(--map-land);
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* --u = unidades del SVG por píxel de pantalla (lo actualiza el JS al hacer
+       zoom). Multiplicando por --u, los trazos miden lo mismo con cualquier zoom. */
+    --u: 0.4;
+  }
+  /* En oscuro no le bajamos el brillo como al resto de las ilustraciones */
+  :global(:root[data-theme='dark']) .lienzo svg[role='img'] {
+    filter: none;
+  }
+  .esc {
+    transform: scale(var(--u));
+  }
+
+  .tierra {
+    fill: var(--map-land);
+  }
+  .hielo {
+    fill: var(--map-ice);
+  }
+  .agua {
+    fill: var(--map-water);
+  }
+  .rio {
+    fill: none;
+    stroke: var(--map-water);
+    stroke-width: calc(var(--u) * 3px);
+    stroke-linecap: round;
+  }
+  .ruta-fondo {
+    fill: none;
+    stroke: var(--map-road);
+    stroke-width: calc(var(--u) * 2.5px);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .recorrido {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: calc(var(--u) * 5px);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    /* pathLength="1": el trazo mide 1, así el dash 1 lo "dibuja" entero */
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  .recorrido.activo {
+    opacity: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1.1s ease-in-out 0.25s;
+  }
+
+  text {
+    font-family: var(--font-body);
+    /* "halo" del color del fondo para que el texto se lea sobre las rutas */
+    paint-order: stroke;
+    stroke: var(--map-land);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+  }
+  .txt-lago {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 13px;
+    fill: var(--map-water-ink);
+    stroke: var(--map-water);
+  }
+  .txt-ruta {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    fill: var(--map-label);
+  }
+  .txt-pueblo {
+    font-size: 12px;
+    font-weight: 600;
+    fill: var(--map-label);
+  }
+  .pueblo {
+    fill: var(--surface);
+    stroke: var(--map-label);
+    stroke-width: 1.5px;
+  }
+  .origen {
+    fill: var(--ink);
+  }
+  .origen-anillo {
+    fill: var(--surface);
+    stroke: var(--ink);
+    stroke-width: 1.5px;
+  }
+  .txt-origen {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    fill: var(--ink);
+  }
+
+  .pin {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+  .pin-punto {
+    fill: var(--accent);
+    stroke: var(--surface);
+    stroke-width: 2px;
+  }
+  .pin-halo {
+    fill: var(--accent);
+    opacity: 0;
+  }
+  .txt-pin {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--ink);
+    display: none;
+  }
+  .pin.activo .txt-pin {
+    display: block;
+  }
+  .pin.activo .pin-halo {
+    opacity: 0.25;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pin.activo .pin-halo {
+      animation: latido 1.8s ease-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+  }
+  @keyframes latido {
+    from {
+      transform: scale(0.5);
+      opacity: 0.45;
+    }
+    to {
+      transform: scale(1.4);
+      opacity: 0;
+    }
+  }
+  /* Filtro de categorías (lo pone el script de Destinos.astro) */
+  .mapa[data-filtro]:not([data-filtro='all']) .pin {
+    opacity: 0.25;
+  }
+  .mapa[data-filtro='excursion'] .pin[data-cat='excursion'],
+  .mapa[data-filtro='traslado'] .pin[data-cat='traslado'],
+  .mapa[data-filtro='estancia'] .pin[data-cat='estancia'],
+  .mapa[data-filtro='chile'] .pin[data-cat='chile'],
+  .mapa .pin.activo {
+    opacity: 1;
+  }
+
+  /* ——— Panel de info ——— */
+  .info {
+    min-height: 92px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+  }
+  .info-ayuda {
+    margin: 0;
+    color: var(--muted);
+  }
+  .info-ayuda[hidden],
+  .info-item[hidden] {
+    display: none;
+  }
+  .info-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .info-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .info-cat {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .info h3 {
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .info p {
+    margin: 0;
+    font-size: 15px;
+    color: var(--muted);
+  }
+  .info-acciones {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ver-todo {
+    min-height: 44px;
+    padding: 0 12px;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .aviso {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  @media (max-width: 560px) {
+    .lienzo {
+      aspect-ratio: 1 / 1;
+    }
+    .info-acciones,
+    .info-acciones .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  const mapa = document.querySelector<HTMLElement>('[data-mapa]');
+  const svg = mapa?.querySelector<SVGSVGElement>('svg');
+
+  if (mapa && svg) {
+    type Caja = [number, number, number, number]; // x, y, ancho, alto
+    const bbTotal = svg.dataset.bboxTotal!.split(' ').map(Number);
+    const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let actual = svg.getAttribute('viewBox')!.split(' ').map(Number) as Caja;
+    let destino = '';
+
+    /** Ajusta una caja a la proporción del recuadro, con aire alrededor */
+    function encuadrar(x0: number, y0: number, x1: number, y1: number): Caja {
+      let w = x1 - x0;
+      let h = y1 - y0;
+      const pad = Math.max(w, h) * 0.12 + 6;
+      // Lugar para los nombres, calculado en PÍXELES de pantalla:
+      // ~50 px a la izquierda (media etiqueta de El Calafate, que va centrada)
+      // y ~100 px a la derecha (los nombres de los destinos van a la derecha).
+      // Como 1 px = w / ancho, despejamos cuántas unidades del SVG son.
+      const cw = svg!.clientWidth || 600;
+      const izq = (50 * (w + pad * 2)) / Math.max(cw - 150, 100);
+      const base = w + pad * 2 + izq;
+      const der = (100 * base) / Math.max(cw - 100, 100);
+      x0 -= pad + izq;
+      y0 -= pad + 8; // arriba, el nombre de El Calafate
+      w = base + der;
+      h += pad * 2 + 8;
+      const minimo = 30; // zoom máximo (City Tour, Cueva del Gualicho)
+      if (w < minimo) { x0 -= (minimo - w) / 2; w = minimo; }
+      if (h < minimo) { y0 -= (minimo - h) / 2; h = minimo; }
+      const prop = svg!.clientWidth / svg!.clientHeight || 4 / 3;
+      if (w / h < prop) { const nw = h * prop; x0 -= (nw - w) / 2; w = nw; }
+      else { const nh = w / prop; y0 -= (nh - h) / 2; h = nh; }
+      return [x0, y0, w, h];
+    }
+
+    function aplicar(c: Caja) {
+      actual = c;
+      svg!.setAttribute('viewBox', c.map((n) => n.toFixed(2)).join(' '));
+      svg!.style.setProperty('--u', String(c[2] / (svg!.clientWidth || 1)));
+    }
+
+    let anim = 0;
+    function irA(c: Caja) {
+      cancelAnimationFrame(anim);
+      if (reducido) return aplicar(c);
+      const desde = actual.slice() as Caja;
+      const t0 = performance.now();
+      const dur = 700;
+      const paso = (t: number) => {
+        const k = Math.min(1, (t - t0) / dur);
+        const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; // ease-in-out
+        aplicar(desde.map((v, i) => v + (c[i] - v) * e) as Caja);
+        if (k < 1) anim = requestAnimationFrame(paso);
+      };
+      anim = requestAnimationFrame(paso);
+    }
+
+    function cajaDe(id: string): Caja {
+      const bb = mapa!.querySelector<HTMLElement>(`.info-item[data-info="${id}"]`)?.dataset.bbox;
+      const [x0, y0, x1, y1] = bb ? bb.split(' ').map(Number) : bbTotal;
+      return encuadrar(x0, y0, x1, y1);
+    }
+
+    function elegir(id: string) {
+      destino = id;
+      mapa!.querySelectorAll<HTMLElement>('[data-info]').forEach((el) => (el.hidden = el.dataset.info !== id));
+      mapa!.querySelectorAll('.pin').forEach((p) => p.classList.toggle('activo', (p as SVGElement).dataset.pin === id));
+      mapa!.querySelectorAll<SVGPathElement>('.recorrido').forEach((r) => {
+        r.classList.remove('activo');
+        if (r.dataset.ruta === id) {
+          void r.getBoundingClientRect(); // fuerza un reflow para reiniciar la animación
+          r.classList.add('activo');
+        }
+      });
+      document
+        .querySelectorAll<HTMLElement>('[data-destino]')
+        .forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.destino === id)));
+      irA(cajaDe(id));
+    }
+
+    // Botones de la lista y de las tarjetas destacadas
+    document.querySelectorAll<HTMLElement>('[data-destino]').forEach((b) =>
+      b.addEventListener('click', () => {
+        elegir(b.dataset.destino!);
+        // En el celu el mapa queda arriba: si no se ve, lo traemos a la vista
+        const r = mapa.getBoundingClientRect();
+        if (r.top < 0 || r.bottom > window.innerHeight) {
+          mapa.scrollIntoView({ behavior: reducido ? 'auto' : 'smooth', block: 'center' });
+        }
+      })
+    );
+    // Tocar un pin en el mapa
+    mapa.querySelectorAll<SVGGElement>('.pin').forEach((p) => p.addEventListener('click', () => elegir(p.dataset.pin!)));
+    // "Ver todo el mapa"
+    mapa.querySelectorAll('[data-ver-todo]').forEach((b) => b.addEventListener('click', () => elegir('')));
+
+    // Primer encuadre y al cambiar el tamaño de la ventana
+    aplicar(cajaDe(''));
+    new ResizeObserver(() => {
+      cancelAnimationFrame(anim);
+      aplicar(cajaDe(destino));
+    }).observe(svg);
+  }
+</script>
