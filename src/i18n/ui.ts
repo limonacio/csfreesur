@@ -84,6 +84,9 @@ const es = {
     eyebrow: 'La camioneta',
     title: 'Chevrolet Spin nueva, lista para el ripio y el viento.',
     photoAlt: 'Chevrolet Spin, el modelo de nuestra camioneta',
+    cerrar: 'Cerrar',
+    cta: 'Consultar por WhatsApp',
+    mensaje: 'Hola! Quiero consultar por un traslado en la Chevrolet Spin.',
     features: (n: number) => [
       `Hasta ${n} pasajeros`,
       'Baúl amplio para valijas',
@@ -211,6 +214,9 @@ const en: Dict = {
     eyebrow: 'The vehicle',
     title: 'A new Chevrolet Spin, ready for gravel roads and wind.',
     photoAlt: 'Chevrolet Spin, the model of our vehicle',
+    cerrar: 'Close',
+    cta: 'Ask on WhatsApp',
+    mensaje: "Hi! I'd like to ask about a transfer in the Chevrolet Spin.",
     features: (n: number) => [
       `Up to ${n} passengers`,
       'Large trunk for suitcases',
@@ -336,6 +342,9 @@ const pt: Dict = {
     eyebrow: 'O veículo',
     title: 'Chevrolet Spin nova, pronta para o cascalho e o vento.',
     photoAlt: 'Chevrolet Spin, o modelo do nosso veículo',
+    cerrar: 'Fechar',
+    cta: 'Consultar pelo WhatsApp',
+    mensaje: 'Olá! Quero consultar um transfer na Chevrolet Spin.',
     features: (n: number) => [
       `Até ${n} passageiros`,
       'Porta-malas amplo para bagagens',

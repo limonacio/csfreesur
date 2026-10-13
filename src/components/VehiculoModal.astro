@@ -1,0 +1,210 @@
+---
+/**
+ * Ventana emergente de "La camioneta".
+ *
+ * Tip de senior: usamos <dialog> nativo con showModal(). El navegador ya trae
+ * gratis lo difícil de un modal accesible:
+ *  - Esc lo cierra (y en Android, el botón Atrás también)
+ *  - el foco queda atrapado adentro mientras está abierto
+ *  - el resto de la página queda "inerte" (no se puede tocar ni leer)
+ *  - el fondo oscuro sale con el pseudo-elemento ::backdrop
+ * Nosotros solo agregamos: abrir desde la tarjeta, cerrar con la X y
+ * cerrar tocando afuera.
+ */
+import { t, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
+import { waLink } from '../lib/whatsapp';
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import fotoVehiculo from '../assets/vehiculo.jpg';
+
+interface Props {
+  lang: Lang;
+}
+const d = t(Astro.props.lang);
+---
+
+<dialog id="vehiculo-modal" class="modal" aria-labelledby="vehiculo-modal-title">
+  <div class="inner">
+    <button type="button" class="close" data-cerrar-modal aria-label={d.vehiculo.cerrar}>
+      <Icon name="close" size={22} />
+    </button>
+    <div class="media">
+      <Image
+        src={fotoVehiculo}
+        alt={d.vehiculo.photoAlt}
+        widths={[480, 768]}
+        sizes="(max-width: 600px) 92vw, 560px"
+        loading="lazy"
+      />
+    </div>
+    <div class="copy">
+      <span class="eyebrow">{d.vehiculo.eyebrow}</span>
+      <h2 id="vehiculo-modal-title">{d.vehiculo.title}</h2>
+      <ul>
+        {d.vehiculo.features(SITE.vehicle.passengers).map((f) => <li>{f}</li>)}
+      </ul>
+      <a href={waLink(d.vehiculo.mensaje)} class="btn btn-wa" target="_blank" rel="noopener">
+        <Icon name="chat" size={20} />
+        {d.vehiculo.cta}
+      </a>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .modal {
+    width: min(560px, calc(100% - 32px));
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--deep);
+    color: var(--on-deep);
+    overflow-y: auto;
+    overscroll-behavior: contain; /* el scroll de adentro no arrastra la página */
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6);
+  }
+  .modal::backdrop {
+    background: rgba(8, 20, 30, 0.6);
+    backdrop-filter: blur(3px);
+  }
+  /* Animación de entrada (solo si la persona no pidió menos movimiento) */
+  @media (prefers-reduced-motion: no-preference) {
+    .modal[open] {
+      animation: entrar 0.22s ease-out;
+    }
+    .modal[open]::backdrop {
+      animation: aparecer 0.22s ease-out;
+    }
+  }
+  @keyframes entrar {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+    }
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+    }
+  }
+  /* Mientras está abierto, la página de atrás no scrollea */
+  :global(html:has(#vehiculo-modal[open])) {
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+  }
+  .close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--surface);
+    color: var(--ink);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+  }
+  .close:hover {
+    color: var(--accent);
+  }
+  .media {
+    aspect-ratio: 3 / 2;
+    background: var(--deep-2);
+  }
+  .media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .copy {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .eyebrow {
+    color: var(--on-deep-accent);
+  }
+  h2 {
+    font-size: clamp(24px, 6vw, 32px);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 24px;
+    color: var(--on-deep-muted);
+    font-size: 16px;
+  }
+  li {
+    padding-left: 20px;
+    position: relative;
+  }
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--on-deep-accent);
+  }
+  .btn {
+    align-self: flex-start;
+  }
+  @media (max-width: 560px) {
+    .copy {
+      padding: 20px 20px 24px;
+    }
+    ul {
+      grid-template-columns: 1fr;
+    }
+    .btn {
+      align-self: stretch;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  const modal = document.getElementById('vehiculo-modal') as HTMLDialogElement | null;
+  let disparador: HTMLElement | null = null;
+
+  if (modal) {
+    // Abrir: cualquier elemento con data-abrir-vehiculo (hoy, la tarjeta del hero).
+    // El href="#vehiculo" queda como plan B: si el JS no carga, igual te lleva a la sección.
+    document.querySelectorAll<HTMLElement>('[data-abrir-vehiculo]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        disparador = el;
+        modal.showModal();
+      });
+    });
+
+    // Cerrar con la X
+    modal.querySelector('[data-cerrar-modal]')?.addEventListener('click', () => modal.close());
+
+    // Cerrar tocando afuera: el click "cae" en el <dialog> mismo (el fondo),
+    // no en su contenido
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.close();
+    });
+
+    // Al cerrar (por X, Esc o afuera), el foco vuelve a la tarjeta
+    modal.addEventListener('close', () => disparador?.focus());
+  }
+</script>
