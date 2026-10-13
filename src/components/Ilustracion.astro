@@ -56,12 +56,20 @@ const { tipo, alt } = Astro.props;
 }
 {
   tipo === 'aeropuerto' && (
-    <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label={alt}>
-      <rect width="400" height="240" fill="#E8EEF0" />
-      <polygon points="0,150 400,130 400,240 0,240" fill="#B9A77F" />
-      <path d="M60 110 L150 95 L240 100" stroke="#0E2233" stroke-width="6" stroke-linecap="round" fill="none" />
-      <path d="M150 95 L130 110 M150 95 L165 108" stroke="#0E2233" stroke-width="4" stroke-linecap="round" />
-      <rect x="40" y="170" width="320" height="16" rx="8" fill="#5E6B70" />
+    /* Versión vertical (4:5) para las tarjetas de destino */
+    <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label={alt}>
+      <rect width="400" height="500" fill="#E8EEF0" />
+      {/* avión */}
+      <path d="M95 182 L300 150" stroke="#0E2233" stroke-width="8" stroke-linecap="round" fill="none" />
+      <path d="M205 165 L178 205 M205 165 L238 198" stroke="#0E2233" stroke-width="6" stroke-linecap="round" fill="none" />
+      <path d="M104 181 L90 155" stroke="#0E2233" stroke-width="6" stroke-linecap="round" fill="none" />
+      {/* torre de control */}
+      <rect x="318" y="250" width="14" height="78" fill="#5E6B70" />
+      <rect x="306" y="232" width="38" height="20" rx="3" fill="#0E2233" />
+      {/* suelo y pista en perspectiva */}
+      <polygon points="0,330 400,312 400,500 0,500" fill="#B9A77F" />
+      <polygon points="110,500 290,500 213,322 187,322" fill="#5E6B70" />
+      <path d="M200 488 L200 334" stroke="#E8EEF0" stroke-width="4" stroke-dasharray="16 14" />
     </svg>
   )
 }
