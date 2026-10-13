@@ -22,19 +22,25 @@ const d = t(Astro.props.lang);
   .to-top {
     position: fixed;
     z-index: 40;
-    /* centrado sobre el botón de WhatsApp (64px) → 28 + (64 - 48) / 2 = 36 */
+    /* centrado sobre el botón de WhatsApp (64px) → 28 + (64 - 48) / 2 = 36
+       bottom: 28 (abajo del WPP) + 64 (alto del WPP) + 20 de aire = 112 */
     right: 36px;
-    bottom: 108px;
+    bottom: 112px;
     width: 48px;
     height: 48px;
     border: 0;
     border-radius: 999px;
-    background: var(--deep);
-    color: #fff;
+    /* Color de acento: contrasta con el fondo claro, con el oscuro y con la
+       sección azul de "La camioneta" (antes usaba --deep y ahí desaparecía) */
+    background: var(--accent);
+    color: var(--on-accent);
     display: grid;
     place-items: center;
     cursor: pointer;
-    box-shadow: var(--shadow-float);
+    /* Anillo del color de la superficie + sombra: lo recorta de cualquier fondo */
+    box-shadow:
+      0 0 0 3px var(--surface),
+      var(--shadow-float);
 
     /* Oculto por defecto: invisible y un poco más abajo */
     opacity: 0;
@@ -53,14 +59,14 @@ const d = t(Astro.props.lang);
     transform: translateY(0);
   }
   .to-top:hover {
-    background: var(--accent);
+    background: var(--accent-hover);
   }
 
   @media (max-width: 560px) {
     .to-top {
-      /* barra de WhatsApp: bottom 16 + alto 54 + 12 de aire = 82 */
-      right: 16px;
-      bottom: 82px;
+      /* barra de WhatsApp: bottom 16 + alto 54 + 20 de aire = 90 */
+      right: 24px;
+      bottom: 90px;
     }
   }
 
