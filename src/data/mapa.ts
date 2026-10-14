@@ -146,7 +146,7 @@ export const PUEBLOS: { nombre: string; p: Punto }[] = [
 // ——— Detalle del pueblo (solo se ve con mucho zoom: City Tour y Punta Walichu) ———
 export const CALLES: { puntos: Punto[]; ripio?: boolean }[] = [
   // Av. del Libertador (la calle principal), sigue como RP11 hacia el este
-  { puntos: [[-50.339, -72.285], [-50.338, -72.265], [-50.336, -72.245], [-50.333, -72.225]] },
+  { puntos: [[-50.3395, -72.31], [-50.339, -72.285], [-50.338, -72.265], [-50.336, -72.245], [-50.333, -72.225]] },
   // Costanera: pegada a la orilla de la Bahía Redonda (la misma costa del lago,
   // corrida ~150 m hacia tierra)
   {
@@ -156,6 +156,9 @@ export const CALLES: { puntos: Punto[]; ripio?: boolean }[] = [
   { puntos: [[-50.339, -72.285], [-50.3315, -72.285]] },
   { puntos: [[-50.3375, -72.268], [-50.3324, -72.268]] },
   { puntos: [[-50.334, -72.237], [-50.3235, -72.24]] },
+  // Accesos a las dos puntas de la costanera (oeste y este)
+  { puntos: [[-50.3395, -72.31], [-50.32, -72.316], [-50.3165, -72.32]] },
+  { puntos: [[-50.3165, -72.225], [-50.333, -72.225]] },
   // Camino de ripio desde la RP11 hasta la entrada de Punta Walichu
   { puntos: [[-50.322, -72.195], [-50.316, -72.193], [-50.311, -72.19]], ripio: true },
 ];
@@ -178,10 +181,15 @@ export const RECORRIDOS: Record<string, { ruta?: Punto[]; zona?: Punto[]; pin?: 
   aeropuerto: { ruta: [CALAFATE, [-50.333, -72.225], [-50.32, -72.19], [-50.31, -72.15], [-50.29, -72.07], [-50.28, -72.053]] },
   'punta-bandera': { ruta: [CALAFATE, [-50.34, -72.3], [-50.36, -72.42], [-50.38, -72.55], [-50.34, -72.67], [-50.3, -72.79]] },
   'lago-roca': { ruta: [CALAFATE, [-50.34, -72.3], [-50.36, -72.42], [-50.38, -72.55], [-50.45, -72.6], [-50.52, -72.7], [-50.565, -72.785]] },
-  // Vuelta por el centro y la costanera: Libertador → costanera → de vuelta al centro
+  // Vuelta completa: Libertador hacia el oeste → la costanera ENTERA, de punta
+  // a punta (oeste → este) → de vuelta al centro por Libertador
   'city-tour': {
-    ruta: [CALAFATE, [-50.3385, -72.275], [-50.339, -72.285], [-50.3315, -72.285], [-50.3325, -72.27], [-50.3295, -72.255], [-50.3235, -72.24], [-50.334, -72.237], [-50.336, -72.245], CALAFATE],
-    pin: [-50.3295, -72.255],
+    ruta: [
+      CALAFATE, [-50.3385, -72.275], [-50.339, -72.285], [-50.3395, -72.31], [-50.32, -72.316],
+      [-50.3165, -72.32], [-50.3245, -72.3], [-50.3315, -72.285], [-50.3325, -72.27], [-50.3295, -72.255],
+      [-50.3235, -72.24], [-50.3165, -72.225], [-50.333, -72.225], [-50.336, -72.245], CALAFATE,
+    ],
+    pin: [-50.3245, -72.3], // en la costanera, del lado oeste: así su nombre no pisa el de El Calafate
   },
   // Por la RP11 hacia el este y el camino de ripio hasta la entrada
   'punta-walichu': {

@@ -132,7 +132,7 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
       }
       {
         ETIQUETAS_CERCA.map((e) => (
-          <g transform={`translate(${xy(e.p).join(' ')})`} class="cerca-solo">
+          <g transform={`translate(${xy(e.p).join(' ')})`} class:list={['cerca-solo', { 'nombre-calle': e.tipo !== 'agua' }]}>
             <g class="esc">
               <text class={e.tipo === 'agua' ? 'txt-lago' : 'txt-calle'} text-anchor="middle" dy="4">
                 {e.nombre}
@@ -292,6 +292,11 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
   }
   svg[data-cerca] .cerca-solo {
     display: inline;
+  }
+  /* Los nombres de las calles necesitan todavía más zoom (en el celu no
+     entran sin pisarse con El Calafate) */
+  svg[data-cerca]:not([data-muy-cerca]) .nombre-calle {
+    display: none;
   }
   .calle {
     fill: none;
@@ -581,7 +586,7 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
       let h = y1 - y0;
       // aire alrededor proporcional (+ un mínimo chico, para que el zoom
       // a la ciudad pueda acercarse de verdad)
-      const pad = Math.max(w, h) * 0.12 + Math.min(6, Math.max(w, h) * 0.3 + 0.3);
+      const pad = Math.max(w, h) * 0.08 + Math.min(6, Math.max(w, h) * 0.12 + 0.2);
       // Lugar para los nombres, calculado en PÍXELES de pantalla: del lado
       // del destino, el ancho de su nombre; del otro, ~50 px (media etiqueta
       // de El Calafate, que va centrada). Como 1 px = w / ancho del recuadro,
@@ -613,8 +618,10 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
       svg!.setAttribute('viewBox', c.map((n) => n.toFixed(2)).join(' '));
       const u = c[2] / (svg!.clientWidth || 1);
       svg!.style.setProperty('--u', String(u));
-      // Con mucho zoom (menos de ~0,06 unidades por píxel) se ven las calles del pueblo
-      svg!.toggleAttribute('data-cerca', u < 0.06);
+      // Niveles de detalle según el zoom (unidades del SVG por píxel):
+      // < 0,04 se ven las calles del pueblo; < 0,025, también sus nombres
+      svg!.toggleAttribute('data-cerca', u < 0.04);
+      svg!.toggleAttribute('data-muy-cerca', u < 0.025);
     }
 
     let anim = 0;
