@@ -3,6 +3,8 @@ import { t, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 import { waLink } from '../lib/whatsapp';
 import Icon from './Icon.astro';
+// Logos oficiales de marcas (librería simple-icons): no los dibujamos a mano
+import { siInstagram } from 'simple-icons';
 
 interface Props {
   lang: Lang;
@@ -36,7 +38,7 @@ const contactos = [
     href: waLink(d.cta.mensaje),
   },
   { clase: 'mail', icono: 'mail' as const, canal: 'Gmail', dato: SITE.email, href: gmail, mailto },
-  { clase: 'ig', icono: 'camera' as const, canal: 'Instagram', dato: SITE.instagramHandle, href: SITE.instagram },
+  { clase: 'ig', logo: siInstagram.path, canal: 'Instagram', dato: SITE.instagramHandle, href: SITE.instagram },
 ];
 ---
 
@@ -56,7 +58,13 @@ const contactos = [
                 data-mailto={c.mailto}
               >
                 <span class="icono" aria-hidden="true">
-                  <Icon name={c.icono} size={20} />
+                  {c.logo ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <path d={c.logo} />
+                    </svg>
+                  ) : (
+                    <Icon name={c.icono!} size={20} />
+                  )}
                 </span>
                 <span class="texto">
                   <strong>{c.canal}:</strong> {c.dato}
@@ -154,7 +162,7 @@ const contactos = [
     --c: #c5221f;
   }
   .ig {
-    --c: #c13584;
+    --c: #e1306c; /* rosa Instagram */
   }
   :global(:root[data-theme='dark']) .wa {
     --c: #5fd394;
