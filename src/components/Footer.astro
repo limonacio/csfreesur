@@ -1,6 +1,8 @@
 ---
 import { t, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
+import { waLink } from '../lib/whatsapp';
+import Icon from './Icon.astro';
 
 interface Props {
   lang: Lang;
@@ -19,22 +21,62 @@ const year = new Date().getFullYear();
 const asunto = encodeURIComponent(d.footer.asunto);
 const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${SITE.email}&su=${asunto}`;
 const mailto = `mailto:${SITE.email}?subject=${asunto}`;
+
+/**
+ * Contacto en forma de lista: ícono + nombre del canal + dato.
+ * La gente no lee, escanea: el ícono con el color de cada servicio se
+ * reconoce de un vistazo, y cada fila entera es un link grande y fácil de tocar.
+ */
+const contactos = [
+  {
+    clase: 'wa',
+    icono: 'chat' as const,
+    canal: 'WhatsApp',
+    dato: SITE.whatsappDisplay,
+    href: waLink(d.cta.mensaje),
+  },
+  { clase: 'mail', icono: 'mail' as const, canal: 'Gmail', dato: SITE.email, href: gmail, mailto },
+  { clase: 'ig', icono: 'camera' as const, canal: 'Instagram', dato: SITE.instagramHandle, href: SITE.instagram },
+];
 ---
 
 <footer class="footer">
   <div class="container inner">
-    <span>© {year} {SITE.fullName} · {SITE.city}, {SITE.region}. {d.footer.rights}</span>
-    <span class="links">
-      <a href={gmail} target="_blank" rel="noopener" data-mailto={mailto} class="mail">{SITE.email}</a>
-      <a href={SITE.instagram} target="_blank" rel="noopener">{SITE.instagramHandle}</a>
-    </span>
+    <div class="contacto">
+      <h2>{d.footer.contacto}</h2>
+      <ul>
+        {
+          contactos.map((c) => (
+            <li>
+              <a
+                href={c.href}
+                target="_blank"
+                rel="noopener"
+                class={c.clase}
+                data-mailto={c.mailto}
+              >
+                <span class="icono" aria-hidden="true">
+                  <Icon name={c.icono} size={20} />
+                </span>
+                <span class="texto">
+                  <strong>{c.canal}:</strong> {c.dato}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <p class="legal">
+      © {year} {SITE.fullName} · {SITE.city}, {SITE.region}. {d.footer.rights}
+    </p>
   </div>
 </footer>
 
 <script>
-  // Pantallas táctiles (celus/tablets): usar la app de correo del teléfono
+  // Pantallas táctiles (celus/tablets): el mail abre la app de correo del teléfono
   if (window.matchMedia('(pointer: coarse)').matches) {
-    document.querySelectorAll<HTMLAnchorElement>('a.mail[data-mailto]').forEach((a) => {
+    document.querySelectorAll<HTMLAnchorElement>('.footer a[data-mailto]').forEach((a) => {
       a.href = a.dataset.mailto!;
       a.removeAttribute('target');
     });
@@ -51,26 +93,83 @@ const mailto = `mailto:${SITE.email}?subject=${asunto}`;
     padding-top: 40px;
     /* espacio extra abajo para que el botón flotante no tape el texto */
     padding-bottom: 96px;
+    /* Todo en una columna a la izquierda: a la derecha están los botones
+       flotantes (WhatsApp y volver arriba) y taparían el texto */
     display: flex;
-    justify-content: space-between;
-    gap: 16px 32px;
-    flex-wrap: wrap;
-    font-size: 15px;
-    color: var(--muted);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
   }
-  .links {
+
+  /* ——— Contacto ——— */
+  .contacto h2 {
+    margin: 0 0 12px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
-    flex-wrap: wrap; /* en pantallas angostas el email y el Instagram bajan de línea */
-    gap: 8px 24px;
-    min-width: 0;
+    flex-direction: column;
+    gap: 4px;
   }
-  .links a {
-    overflow-wrap: anywhere; /* un email largo nunca empuja el ancho de la página */
+  li a {
+    min-height: 40px; /* fácil de tocar con el dedo */
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 16px;
   }
-  a {
+  .texto {
+    overflow-wrap: anywhere; /* un mail largo nunca empuja el ancho de la página */
+  }
+  .texto strong {
+    font-weight: 700;
+  }
+  li a:hover .texto {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  /* Ícono en un círculo con el color de cada servicio */
+  .icono {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--c);
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+  }
+  .wa {
+    --c: #1b7f4b;
+  }
+  .mail {
+    --c: #c5221f;
+  }
+  .ig {
+    --c: #c13584;
+  }
+  :global(:root[data-theme='dark']) .wa {
+    --c: #5fd394;
+  }
+  :global(:root[data-theme='dark']) .mail {
+    --c: #f28b82;
+  }
+  :global(:root[data-theme='dark']) .ig {
+    --c: #ee8fc8;
+  }
+
+  .legal {
+    margin: 0;
+    font-size: 14px;
     color: var(--muted);
-  }
-  a:hover {
-    color: var(--accent);
+    max-width: 560px;
   }
 </style>

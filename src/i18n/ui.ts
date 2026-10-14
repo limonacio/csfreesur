@@ -139,6 +139,7 @@ const es = {
   footer: {
     rights: 'Todos los derechos reservados.',
     asunto: 'Consulta de traslado',
+    contacto: 'Contacto',
   },
   float: 'Escribir por WhatsApp',
   arriba: 'Volver arriba',
@@ -271,6 +272,7 @@ const en: Dict = {
   footer: {
     rights: 'All rights reserved.',
     asunto: 'Transfer inquiry',
+    contacto: 'Contact',
   },
   float: 'Message us on WhatsApp',
   arriba: 'Back to top',
@@ -401,6 +403,7 @@ const pt: Dict = {
   footer: {
     rights: 'Todos os direitos reservados.',
     asunto: 'Consulta de transfer',
+    contacto: 'Contato',
   },
   float: 'Escrever no WhatsApp',
   arriba: 'Voltar ao topo',
