@@ -81,8 +81,7 @@ const contactos = [
       </p>
       {/* Firma del desarrollador: discreta, en un tono más suave que el legal */}
       <p class="firma">
-        {d.footer.desarrollado}{' '}
-        <a href="https://limonacio.com" target="_blank" rel="noopener">Limonacio</a>
+        <a href="https://limonacio.com" target="_blank" rel="noopener">{d.footer.desarrollado} Limonacio</a>
       </p>
     </div>
   </div>
@@ -181,10 +180,23 @@ const contactos = [
     --c: #ee8fc8;
   }
 
+  /* Cierre centrado (copyright + firma), separado del contacto por una línea */
   .cierre {
+    align-self: stretch;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 4px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  /* En el celu el botón "volver arriba" flota a la derecha: dejamos el mismo
+     margen a los dos lados para que no tape el texto y siga centrado */
+  @media (max-width: 560px) {
+    .cierre {
+      padding-inline: 52px;
+    }
   }
   .firma {
     margin: 0;
@@ -192,14 +204,18 @@ const contactos = [
     color: var(--muted);
     opacity: 0.75;
   }
+  /* Toda la frase es el link, con un subrayado suave que invita a tocar */
   .firma a {
     color: inherit;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    text-underline-offset: 4px;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
   }
   .firma a:hover {
     color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    text-decoration-color: currentColor;
   }
   .legal {
     margin: 0;
