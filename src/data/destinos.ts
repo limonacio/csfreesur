@@ -102,11 +102,13 @@ export const DESTINOS: Destino[] = [
     distanciaTexto: { es: 'En la ciudad', en: 'In town', pt: 'Na cidade' },
   },
   {
-    id: 'cueva-gualicho',
-    nombre: { es: 'Cueva del Gualicho', en: 'Gualicho Cave', pt: 'Caverna do Gualicho' },
+    // Nombre oficial: Punta Walichu (las "Cuevas del Gualicho"). Reserva natural y
+    // arqueológica a ~8 km del centro, sobre la costa del Lago Argentino, con
+    // acceso desde la RP11. Fuente: elcalafate.tur.ar (sitio de turismo de El Calafate)
+    id: 'punta-walichu',
+    nombre: { es: 'Punta Walichu', en: 'Punta Walichu', pt: 'Punta Walichu' },
     categoria: 'excursion',
-    km: null,
-    distanciaTexto: { es: 'Cerca del centro', en: 'Near town', pt: 'Perto do centro' },
+    km: 8,
   },
 
   // ——— Traslados ———

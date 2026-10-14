@@ -24,6 +24,9 @@ import {
   CALAFATE,
   PUEBLOS,
   RECORRIDOS,
+  CALLES,
+  ETIQUETAS_CERCA,
+  CRUCE_WALICHU,
   type Punto,
 } from '../data/mapa';
 
@@ -53,7 +56,7 @@ const items = destinos.map((x) => {
   const rec = RECORRIDOS[x.id] ?? {};
   const puntos = rec.ruta ?? rec.zona ?? [];
   // El pin va al final del recorrido. Los "a medida" (zona) no tienen pin propio.
-  const pin = rec.ruta ? rec.ruta[rec.ruta.length - 1] : undefined;
+  const pin = rec.pin ?? (rec.ruta ? rec.ruta[rec.ruta.length - 1] : undefined);
   return {
     x,
     ruta: rec.ruta,
@@ -93,6 +96,8 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
       {LAGOS.map((l) => <path d={poligono(l.contorno)} class="agua" />)}
 
       {RUTAS.map((r) => <path d={linea(r.puntos)} class="ruta-fondo" />)}
+      {/* Calles del pueblo: solo aparecen con mucho zoom (ver data-cerca en el script) */}
+      {CALLES.map((c) => <path d={linea(c.puntos)} class:list={['calle', 'cerca-solo', { ripio: c.ripio }]} />)}
 
       {/* Recorridos (uno por destino, ocultos hasta que se elige) */}
       {
@@ -125,6 +130,22 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
           </g>
         ))
       }
+      {
+        ETIQUETAS_CERCA.map((e) => (
+          <g transform={`translate(${xy(e.p).join(' ')})`} class="cerca-solo">
+            <g class="esc">
+              <text class={e.tipo === 'agua' ? 'txt-lago' : 'txt-calle'} text-anchor="middle" dy="4">
+                {e.nombre}
+              </text>
+            </g>
+          </g>
+        ))
+      }
+      <g transform={`translate(${xy(CRUCE_WALICHU).join(' ')})`} class="cerca-solo">
+        <g class="esc">
+          <circle r="3.5" class="pueblo"></circle>
+        </g>
+      </g>
       {
         PUEBLOS.map((p) => (
           <g transform={`translate(${xy(p.p).join(' ')})`}>
@@ -264,6 +285,28 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     stroke-width: calc(var(--u) * 2.5px);
     stroke-linecap: round;
     stroke-linejoin: round;
+  }
+  /* Calles del pueblo (solo con zoom en la ciudad) */
+  .cerca-solo {
+    display: none;
+  }
+  svg[data-cerca] .cerca-solo {
+    display: inline;
+  }
+  .calle {
+    fill: none;
+    stroke: var(--map-road);
+    stroke-width: calc(var(--u) * 3px);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .calle.ripio {
+    stroke-dasharray: calc(var(--u) * 5px) calc(var(--u) * 4px);
+  }
+  .txt-calle {
+    font-size: 11px;
+    font-weight: 600;
+    fill: var(--map-label);
   }
   .recorrido {
     fill: none;
@@ -536,7 +579,9 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     function encuadrar(x0: number, y0: number, x1: number, y1: number, lado = 'der', etiqueta = 100): Caja {
       let w = x1 - x0;
       let h = y1 - y0;
-      const pad = Math.max(w, h) * 0.12 + 6;
+      // aire alrededor proporcional (+ un mínimo chico, para que el zoom
+      // a la ciudad pueda acercarse de verdad)
+      const pad = Math.max(w, h) * 0.12 + Math.min(6, Math.max(w, h) * 0.3 + 0.3);
       // Lugar para los nombres, calculado en PÍXELES de pantalla: del lado
       // del destino, el ancho de su nombre; del otro, ~50 px (media etiqueta
       // de El Calafate, que va centrada). Como 1 px = w / ancho del recuadro,
@@ -548,10 +593,13 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
       const base = w + pad * 2 + izq;
       const der = (pxDer * base) / Math.max(cw - pxDer, 100);
       x0 -= pad + izq;
-      y0 -= pad + 8; // arriba, el nombre de El Calafate
+      // arriba, ~26 px para el nombre de El Calafate
+      const ch = svg!.clientHeight || 450;
+      const arriba = (26 * (h + pad * 2)) / Math.max(ch - 26, 100);
+      y0 -= pad + arriba;
       w = base + der;
-      h += pad * 2 + 8;
-      const minimo = 30; // zoom máximo (City Tour, Cueva del Gualicho)
+      h += pad * 2 + arriba;
+      const minimo = 2.5; // zoom máximo: ~2,5 km de ancho (City Tour, Punta Walichu)
       if (w < minimo) { x0 -= (minimo - w) / 2; w = minimo; }
       if (h < minimo) { y0 -= (minimo - h) / 2; h = minimo; }
       const prop = svg!.clientWidth / svg!.clientHeight || 4 / 3;
@@ -563,7 +611,10 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     function aplicar(c: Caja) {
       actual = c;
       svg!.setAttribute('viewBox', c.map((n) => n.toFixed(2)).join(' '));
-      svg!.style.setProperty('--u', String(c[2] / (svg!.clientWidth || 1)));
+      const u = c[2] / (svg!.clientWidth || 1);
+      svg!.style.setProperty('--u', String(u));
+      // Con mucho zoom (menos de ~0,06 unidades por píxel) se ven las calles del pueblo
+      svg!.toggleAttribute('data-cerca', u < 0.06);
     }
 
     let anim = 0;
