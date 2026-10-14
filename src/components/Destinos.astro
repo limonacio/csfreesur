@@ -14,7 +14,10 @@ const { lang } = Astro.props;
 const d = t(lang);
 
 const destacados = DESTINOS_VISIBLES.filter((x) => x.destacado);
-const resto = DESTINOS_VISIBLES.filter((x) => !x.destacado);
+// La lista junto al mapa tiene TODOS los destinos, con los 3 destacados
+// primero (Glaciar, El Chaltén, Aeropuerto): así quien está mirando el mapa
+// no tiene que subir hasta las tarjetas para ver esos recorridos.
+const enLista = [...destacados, ...DESTINOS_VISIBLES.filter((x) => !x.destacado)];
 const categorias = CATEGORIAS_VISIBLES;
 
 /** "≈ 80 km", o el texto especial, o "Consultá" */
@@ -102,7 +105,7 @@ function distancia(x: Destino): string {
 
   <ul class="list">
     {
-      resto.map((x) => (
+      enLista.map((x) => (
         <li data-cat={x.categoria}>
           <button type="button" data-destino={x.id} aria-pressed="false">
             <span>
