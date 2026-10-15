@@ -25,10 +25,7 @@ const links = [
   <div class="container header-inner">
     <a href={getRelativeLocaleUrl(lang, '')} class="brand" aria-label={SITE.fullName}>
       <Logo />
-      <span class="brand-text">
-        <span class="brand-name">{SITE.name}</span>
-        <span class="brand-sub">Traslados · {SITE.city}</span>
-      </span>
+      <span class="brand-name">{SITE.fullName}</span>
     </a>
 
     <nav class="nav" id="menu" aria-label="Principal">
@@ -86,22 +83,12 @@ const links = [
     color: var(--accent);
     text-decoration: none;
   }
-  .brand-text {
-    display: flex;
-    flex-direction: column;
-  }
   .brand-name {
     font-family: var(--font-display);
     font-size: 22px;
     font-weight: 600;
     color: var(--ink);
     line-height: 1.1;
-  }
-  .brand-sub {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
   }
 
   .nav {
@@ -156,9 +143,6 @@ const links = [
     .nav-links {
       gap: 16px;
     }
-    .brand-sub {
-      display: none;
-    }
   }
   .nav-links a,
   .brand-name {
@@ -169,9 +153,6 @@ const links = [
   @media (max-width: 960px) {
     :root {
       --header-h: 64px;
-    }
-    .brand-sub {
-      display: none;
     }
     .brand-name {
       font-size: 19px;
@@ -225,7 +206,16 @@ const links = [
       gap: 8px;
     }
     .brand-name {
-      font-size: 17px;
+      font-size: 15px;
+    }
+  }
+  /* Celus muy angostos (320 px): el nombre largo pasa a dos renglones
+     ("Inty Caren / Transfers") en vez de empujar la hamburguesa afuera */
+  @media (max-width: 360px) {
+    .brand-name {
+      white-space: normal;
+      line-height: 1.05;
+      max-width: 9ch;
     }
   }
 </style>
