@@ -18,10 +18,10 @@ const es = {
   meta: {
     title: 'Inty Caren Transfers | Remis privado en El Calafate',
     description:
-      'Traslados privados desde El Calafate en Chevrolet Spin nueva: aeropuerto, Glaciar Perito Moreno, El Chaltén, estancias y Río Gallegos.',
+      'Remis privado desde El Calafate en Chevrolet Spin nueva: aeropuerto, Perito Moreno, El Chaltén y estancias.',
     // Versión que se usa cuando SITE.chile = true
     descriptionChile:
-      'Traslados privados desde El Calafate en Chevrolet Spin nueva: aeropuerto, Glaciar Perito Moreno, El Chaltén, estancias, Río Gallegos y Chile (Puerto Natales, Punta Arenas).',
+      'Remis privado desde El Calafate en Chevrolet Spin nueva: aeropuerto, Perito Moreno, El Chaltén, estancias y Chile.',
   },
   nav: {
     destinos: 'Destinos',
@@ -153,9 +153,9 @@ const en: Dict = {
   meta: {
     title: 'Inty Caren Transfers | Private driver in El Calafate',
     description:
-      'Private transfers from El Calafate in a brand-new Chevrolet Spin: airport, Perito Moreno Glacier, El Chaltén, estancias and Río Gallegos.',
+      'Private driver from El Calafate in a brand-new Chevrolet Spin: airport, Perito Moreno, El Chaltén and estancias.',
     descriptionChile:
-      'Private transfers from El Calafate in a brand-new Chevrolet Spin: airport, Perito Moreno Glacier, El Chaltén, estancias, Río Gallegos and Chile (Puerto Natales, Punta Arenas).',
+      'Private driver from El Calafate in a brand-new Chevrolet Spin: airport, Perito Moreno, El Chaltén, estancias and Chile.',
   },
   nav: {
     destinos: 'Destinations',
@@ -285,9 +285,9 @@ const pt: Dict = {
   meta: {
     title: 'Inty Caren Transfers | Motorista particular em El Calafate',
     description:
-      'Transfers privados desde El Calafate em Chevrolet Spin nova: aeroporto, Geleira Perito Moreno, El Chaltén, estâncias e Río Gallegos.',
+      'Motorista particular desde El Calafate em Chevrolet Spin nova: aeroporto, Perito Moreno, El Chaltén e estâncias.',
     descriptionChile:
-      'Transfers privados desde El Calafate em Chevrolet Spin nova: aeroporto, Geleira Perito Moreno, El Chaltén, estâncias, Río Gallegos e Chile (Puerto Natales, Punta Arenas).',
+      'Motorista particular desde El Calafate em Chevrolet Spin nova: aeroporto, Perito Moreno, El Chaltén, estâncias e Chile.',
   },
   nav: {
     destinos: 'Destinos',

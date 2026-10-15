@@ -38,6 +38,8 @@ const jsonLd = {
     addressCountry: 'AR',
   },
 };
+// Imagen para compartir el link (WhatsApp, Facebook, X): URL ABSOLUTA y por idioma
+const ogImage = new URL(lang === 'es' ? '/og-image.jpg' : `/og-image-${lang}.jpg`, Astro.site).href;
 ---
 
 <!doctype html>
@@ -62,11 +64,17 @@ const jsonLd = {
     <meta property="og:locale" content={LANG_LOCALE[lang]} />
     <meta property="og:site_name" content={SITE.fullName} />
     {/* Vista previa al compartir el link: tiene que ser una URL ABSOLUTA (con dominio) */}
-    <meta property="og:image" content={new URL('/og-image.jpg', Astro.site).href} />
+    {/* Una imagen por idioma: llevan el nombre, la frase y el botón traducidos
+        (se generan con la foto de la Spin; ver public/og-image*.jpg) */}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={dict.hero.photoAlt} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={dict.meta.title} />
+    <meta name="twitter:description" content={SITE.chile ? dict.meta.descriptionChile : dict.meta.description} />
+    <meta name="twitter:image" content={ogImage} />
 
     {/* Color de la barra del navegador en el celu, según el tema */}
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
