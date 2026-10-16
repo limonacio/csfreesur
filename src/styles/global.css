@@ -11,12 +11,12 @@
   /* Modo claro con más contraste: el fondo es un gris celeste un poco más
      marcado y los bordes más oscuros, así las tarjetas blancas se despegan
      (pedido del usuario: "se pierden los recuadros") */
-  --bg: #e8eef1;
+  --bg: #e0e8ec;
   --surface: #ffffff;
   --ink: #0e2233;
-  --muted: #455661;
-  --line: #c3d0d7;
-  --line-strong: #a8bac3;
+  --muted: #3f505b;
+  --line: #b6c5cd;
+  --line-strong: #98acb6;
   --accent: #0f5b73;
   --accent-hover: #0a4254;
   --accent-soft: #e4eef1;
@@ -55,9 +55,9 @@
 
   --shadow: 0 12px 32px -18px rgba(14, 34, 51, 0.35);
   --shadow-float: 0 10px 24px -8px rgba(14, 34, 51, 0.5);
-  /* Sombra suave de las tarjetas: en claro ayuda a ver dónde empieza y
-     termina cada recuadro; en oscuro no hace falta (se anula abajo) */
-  --shadow-card: 0 1px 2px rgba(14, 34, 51, 0.06), 0 8px 18px -12px rgba(14, 34, 51, 0.28);
+  /* Sombra suave de las tarjetas: ayuda a ver dónde empieza y termina cada
+     recuadro (en oscuro se redefine más abajo, más profunda) */
+  --shadow-card: 0 1px 2px rgba(14, 34, 51, 0.08), 0 8px 20px -12px rgba(14, 34, 51, 0.34);
 
   /* Le dice al navegador que dibuje los controles nativos (calendario del
      input date, scrollbars) en versión clara */
@@ -70,12 +70,12 @@
  * El atributo data-theme="dark" lo pone el script del <head> (Base.astro).
  */
 :root[data-theme='dark'] {
-  --bg: #0b1620;
-  --surface: #122230;
+  --bg: #07111a;
+  --surface: #13263a;
   --ink: #e6eef1;
-  --muted: #9fb3bd;
-  --line: #22384a;
-  --line-strong: #2e4a5f;
+  --muted: #aec1cb;
+  --line: #2b4659;
+  --line-strong: #3a5a70;
   --accent: #6fc0dc;
   --accent-hover: #9ad5ea;
   --accent-soft: #173447;
@@ -93,7 +93,7 @@
   --map-label: #9fb3bd;
   --shadow: 0 12px 32px -18px rgba(0, 0, 0, 0.7);
   --shadow-float: 0 10px 24px -8px rgba(0, 0, 0, 0.7);
-  --shadow-card: none;
+  --shadow-card: 0 10px 22px -14px rgba(0, 0, 0, 0.8);
   color-scheme: dark;
 }
 
