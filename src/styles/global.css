@@ -8,12 +8,15 @@
 
 :root {
   /* Colores */
-  --bg: #f5f7f7;
+  /* Modo claro con más contraste: el fondo es un gris celeste un poco más
+     marcado y los bordes más oscuros, así las tarjetas blancas se despegan
+     (pedido del usuario: "se pierden los recuadros") */
+  --bg: #e8eef1;
   --surface: #ffffff;
   --ink: #0e2233;
-  --muted: #4a5c68;
-  --line: #d9e2e6;
-  --line-strong: #c9d6db;
+  --muted: #455661;
+  --line: #c3d0d7;
+  --line-strong: #a8bac3;
   --accent: #0f5b73;
   --accent-hover: #0a4254;
   --accent-soft: #e4eef1;
@@ -30,7 +33,7 @@
   --on-ink: #ffffff; /* texto sobre fondos color --ink (ej: filtro activo) */
 
   /* Mapa ilustrado (Mapa.astro) */
-  --map-land: #eef2ef;
+  --map-land: #f3f6f4;
   --map-water: #b6d9e6;
   --map-water-ink: #2f6b82;
   --map-ice: #ffffff;
@@ -52,6 +55,9 @@
 
   --shadow: 0 12px 32px -18px rgba(14, 34, 51, 0.35);
   --shadow-float: 0 10px 24px -8px rgba(14, 34, 51, 0.5);
+  /* Sombra suave de las tarjetas: en claro ayuda a ver dónde empieza y
+     termina cada recuadro; en oscuro no hace falta (se anula abajo) */
+  --shadow-card: 0 1px 2px rgba(14, 34, 51, 0.06), 0 8px 18px -12px rgba(14, 34, 51, 0.28);
 
   /* Le dice al navegador que dibuje los controles nativos (calendario del
      input date, scrollbars) en versión clara */
@@ -87,6 +93,7 @@
   --map-label: #9fb3bd;
   --shadow: 0 12px 32px -18px rgba(0, 0, 0, 0.7);
   --shadow-float: 0 10px 24px -8px rgba(0, 0, 0, 0.7);
+  --shadow-card: none;
   color-scheme: dark;
 }
 

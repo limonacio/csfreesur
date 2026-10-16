@@ -245,6 +245,7 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     aspect-ratio: 4 / 3;
     border-radius: var(--radius);
     border: 1px solid var(--line);
+    box-shadow: var(--shadow-card); /* separa el recuadro del fondo en modo claro */
     overflow: hidden;
     background: var(--map-land);
   }
@@ -436,6 +437,7 @@ const bboxTotal = bbox([CALAFATE, ...PUEBLOS.map((p) => p.p), ...items.flatMap((
     padding: 18px 20px;
     background: var(--surface);
     border: 1px solid var(--line);
+    box-shadow: var(--shadow-card); /* separa el recuadro del fondo en modo claro */
     border-radius: var(--radius);
     display: flex;
     align-items: center;
