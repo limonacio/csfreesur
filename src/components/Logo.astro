@@ -15,19 +15,25 @@
 import { Image } from 'astro:assets';
 import logoDia from '../assets/logo-dia.png';
 import logoNoche from '../assets/logo-noche.png';
+
+interface Props {
+  /** Tamaño en píxeles (es un círculo) */
+  size?: number;
+}
+const { size = 56 } = Astro.props;
 ---
 
-<span class="logo">
+<span class="logo" style={`--logo-size: ${size}px`}>
   {/* alt="" porque el link que los contiene ya tiene el nombre de la marca */}
-  <Image src={logoDia} alt="" width={56} height={56} densities={[1, 2, 3]} loading="eager" class="logo-dia" />
-  <Image src={logoNoche} alt="" width={56} height={56} densities={[1, 2, 3]} loading="eager" class="logo-noche" />
+  <Image src={logoDia} alt="" width={size} height={size} densities={[1, 2, 3]} loading="lazy" class="logo-dia" />
+  <Image src={logoNoche} alt="" width={size} height={size} densities={[1, 2, 3]} loading="lazy" class="logo-noche" />
 </span>
 
 <style>
   .logo {
     display: block;
-    width: 56px;
-    height: 56px;
+    width: var(--logo-size);
+    height: var(--logo-size);
     flex: none;
   }
   .logo img {
@@ -46,16 +52,10 @@ import logoNoche from '../assets/logo-noche.png';
   :global([data-logo='night']) .logo-dia {
     display: none !important;
   }
-  @media (max-width: 960px) {
-    .logo {
-      width: 44px;
-      height: 44px;
-    }
-  }
 </style>
 
 <script>
   // Re-chequeamos cada minuto: si alguien deja la pestaña abierta y pasan las
-  // 23:30 (o las 6:00), el logo cambia solo. La función la define Base.astro.
+  // 22:00 (o las 6:00), el logo cambia solo. La función la define Base.astro.
   setInterval(() => (window as any).__updateLogo?.(), 60_000);
 </script>

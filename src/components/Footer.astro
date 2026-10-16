@@ -3,6 +3,7 @@ import { t, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 import { waLink } from '../lib/whatsapp';
 import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 // Logos oficiales de marcas (librería simple-icons): no los dibujamos a mano
 import { siInstagram } from 'simple-icons';
 
@@ -76,6 +77,8 @@ const contactos = [
       </ul>
     </div>
     <div class="cierre">
+      {/* Logo de día/noche (cambia de 22:00 a 06:00, hora de El Calafate) */}
+      <Logo size={64} />
       <p class="legal">
         © {year} {SITE.fullName} · {SITE.city}, {SITE.region}. {d.footer.rights}
       </p>

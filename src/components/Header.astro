@@ -5,7 +5,8 @@ import { SITE } from '../config/site';
 import { waLink } from '../lib/whatsapp';
 import Icon from './Icon.astro';
 import MenuPreferencias from './MenuPreferencias.astro';
-import Logo from './Logo.astro';
+import { Image } from 'astro:assets';
+import logoMarca from '../assets/logo-inty.png';
 
 interface Props {
   lang: Lang;
@@ -24,7 +25,9 @@ const links = [
 <header class="header">
   <div class="container header-inner">
     <a href={getRelativeLocaleUrl(lang, '')} class="brand" aria-label={SITE.fullName}>
-      <Logo />
+      {/* Logo de Inty Caren Transfers (el de día/noche pasó al footer).
+          alt="" porque el link ya dice el nombre de la marca */}
+      <Image src={logoMarca} alt="" width={60} height={60} densities={[1, 2, 3]} loading="eager" class="marca-logo" />
       <span class="brand-name">{SITE.fullName}</span>
     </a>
 
@@ -82,6 +85,13 @@ const links = [
     gap: 12px;
     color: var(--accent);
     text-decoration: none;
+  }
+  .marca-logo {
+    display: block;
+    width: 60px;
+    height: 60px;
+    flex: none;
+    border-radius: 50%;
   }
   .brand-name {
     font-family: var(--font-display);
@@ -156,6 +166,10 @@ const links = [
     }
     .brand-name {
       font-size: 19px;
+    }
+    .marca-logo {
+      width: 46px;
+      height: 46px;
     }
     .menu-toggle {
       display: grid;
