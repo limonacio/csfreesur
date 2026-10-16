@@ -79,13 +79,15 @@ const contactos = [
     <div class="cierre">
       {/* Logo de día/noche (cambia de 22:00 a 06:00, hora de El Calafate) */}
       <Logo size={64} />
-      <p class="legal">
-        © {year} {SITE.fullName} · {SITE.city}, {SITE.region}. {d.footer.rights}
-      </p>
-      {/* Firma del desarrollador: discreta, en un tono más suave que el legal */}
-      <p class="firma">
-        <a href="https://limonacio.com" target="_blank" rel="noopener">{d.footer.desarrollado} Limonacio</a>
-      </p>
+      <div class="textos">
+        <p class="legal">
+          © {year} {SITE.fullName} · {SITE.city}, {SITE.region}. {d.footer.rights}
+        </p>
+        {/* Firma del desarrollador: discreta, en un tono más suave que el legal */}
+        <p class="firma">
+          <a href="https://limonacio.com" target="_blank" rel="noopener">{d.footer.desarrollado} Limonacio</a>
+        </p>
+      </div>
     </div>
   </div>
 </footer>
@@ -193,6 +195,23 @@ const contactos = [
     padding-top: 20px;
     border-top: 1px solid var(--line);
     text-align: center;
+  }
+  .textos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px; /* la firma, separadita del copyright */
+  }
+  /* Desktop/tablet: el logo a la izquierda y los textos centrados en la fila.
+     La tercera columna (vacía) mide lo mismo que el logo, así los textos
+     quedan centrados de verdad respecto de la página */
+  @media (min-width: 769px) {
+    .cierre {
+      display: grid;
+      grid-template-columns: 64px 1fr 64px;
+      align-items: center;
+      gap: 24px;
+    }
   }
   /* En el celu el botón "volver arriba" flota a la derecha: dejamos el mismo
      margen a los dos lados para que no tape el texto y siga centrado */
