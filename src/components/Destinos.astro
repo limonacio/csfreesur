@@ -400,15 +400,27 @@ function distancia(x: Destino): string {
     .list {
       grid-template-columns: 1fr;
     }
+    /* En el celu los filtros quedan quietos (sin scroll de costado) y en UNA
+       sola fila: más compactos, la letra se achica un poco según el ancho de
+       la pantalla y cada botón se estira para llenar la fila pareja */
     .filters {
       flex-wrap: nowrap;
-      overflow-x: auto;
-      margin-inline: calc(-1 * var(--gutter));
-      padding-inline: var(--gutter);
-      scrollbar-width: none;
+      gap: 6px;
     }
     .filters button {
-      flex: none;
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 0 8px;
+      font-size: clamp(12.5px, 3.5vw, 14px);
+      white-space: nowrap;
+    }
+  }
+  @media (max-width: 360px) {
+    .filters {
+      gap: 4px;
+    }
+    .filters button {
+      padding: 0 4px;
     }
   }
 </style>
